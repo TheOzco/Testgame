@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>مین‌روب دونفره</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg-1:#eaf7ec;
+  --bg-2:#dcefe3;
+  --bg-3:#cdeadd;
+
+  --card:#fff;
+
+  --ink:#1e3a2b;
+  --ink-soft:#5b7268;
+
+  --green:#2f9e63;
+  --green-dark:#227a4c;
+  --green-pale:#e4f5ea;
+
+  --blue:#2e7dbb;
+  --blue-dark:#215f92;
+  --blue-pale:#e5f1fa;
+
+  --red:#e2574c;
+
+  --tile:#edf6f0;
+  --tile-dark:#d8eade;
+
+  --shadow:
+    0 12px 30px -10px rgba(35,90,60,.25);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  min-height:100%;
+}
+
+body{
+  margin:0;
+  padding:18px 13px;
+
+  font-family:'Vazirmatn',sans-serif;
+
+  color:var(--ink);
+
+  background:
+    radial-gradient(
+      60% 50% at 15% 0%,
+      rgba(46,125,187,.10),
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 60% at 100% 100%,
+      rgba(47,158,99,.14),
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
+      var(--bg-1),
+      var(--bg-2) 55%,
+      var(--bg-3)
+    );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:440px;
+}
+
+.brand{
+  text-align:center;
+  margin-bottom:17px;
+}
+
+.logo{
+  font-family:'Baloo 2',sans-serif;
+  font-size:28px;
+  font-weight:800;
+  color:var(--green-dark);
+}
+
+.brand p{
+  margin:3px 0 0;
+  color:var(--ink-soft);
+  font-size:12px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:22px;
+  padding:23px 20px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(47,158,99,.1);
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+  animation:rise .25s ease;
+}
+
+@keyframes rise{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.title{
+  margin:0 0 5px;
+  font-size:19px;
+}
+
+.sub{
+  color:var(--ink-soft);
+  font-size:13px;
+  line-height:1.9;
+  margin:0 0 18px;
+}
+
+.stack{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:14px 15px;
+
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.primary{
+  color:#fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--green),
+      var(--green-dark)
+    );
+
+  box-shadow:
+    0 10px 20px -8px rgba(47,158,99,.55);
+}
+
+.secondary{
+  background:var(--blue-pale);
+  color:var(--blue-dark);
+}
+
+.outline{
+  background:transparent;
+  color:var(--ink-soft);
+  border:1.5px solid #dbe8e0;
+}
+
+.code-input{
+  width:100%;
+
+  border:1.5px solid #d8ece0;
+  border-radius:14px;
+
+  padding:14px;
+
+  background:var(--green-pale);
+
+  font-family:'Baloo 2',sans-serif;
+  font-size:24px;
+  letter-spacing:5px;
+
+  text-align:center;
+  direction:ltr;
+
+  outline:none;
+}
+
+.code-input:focus{
+  border-color:var(--green);
+}
+
+.code-box{
+  background:var(--green-pale);
+  border:1.5px dashed var(--green);
+  border-radius:16px;
+
+  padding:16px;
+
+  text-align:center;
+
+  margin:15px 0;
+}
+
+.code-label{
+  font-size:12px;
+  color:var(--ink-soft);
+}
+
+.room-code{
+  font-family:'Baloo 2',sans-serif;
+  font-size:34px;
+  font-weight:800;
+
+  letter-spacing:7px;
+
+  direction:ltr;
+
+  color:var(--green-dark);
+}
+
+.waiting{
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:13px;
+  margin:15px 0;
+}
+
+.spinner{
+  display:inline-block;
+
+  width:18px;
+  height:18px;
+
+  border:3px solid rgba(47,158,99,.2);
+  border-top-color:var(--green);
+
+  border-radius:50%;
+
+  animation:spin .8s linear infinite;
+
+  vertical-align:middle;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+.error{
+  color:var(--red);
+  font-size:12px;
+  text-align:center;
+  min-height:18px;
+  margin-top:8px;
+}
+
+/* PLAYERS */
+
+.players{
+  display:flex;
+  gap:9px;
+  margin-bottom:10px;
+}
+
+.player{
+  flex:1;
+
+  background:var(--green-pale);
+
+  border-radius:14px;
+
+  padding:9px;
+
+  text-align:center;
+
+  transition:.2s;
+}
+
+.player.blue{
+  background:var(--blue-pale);
+}
+
+.player.active{
+  box-shadow:
+    0 0 0 3px var(--green);
+
+  transform:translateY(-2px);
+}
+
+.player.blue.active{
+  box-shadow:
+    0 0 0 3px var(--blue);
+}
+
+.player-name{
+  font-size:12px;
+  font-weight:700;
+}
+
+.player-score{
+  font-family:'Baloo 2',sans-serif;
+  font-size:18px;
+  font-weight:800;
+
+  margin-top:1px;
+}
+
+.turn{
+  text-align:center;
+
+  min-height:21px;
+
+  font-size:13px;
+  font-weight:700;
+
+  color:var(--green-dark);
+
+  margin-bottom:9px;
+}
+
+/* CHOICE SCREEN */
+
+.choices-grid{
+  display:grid;
+  grid-template-columns:repeat(16,1fr);
+  gap:6px;
+  margin-bottom:15px;
+}
+
+.choice-cell{
+  aspect-ratio:1;
+  border-radius:6px;
+  border:1px solid var(--tile-dark);
+  background:linear-gradient(145deg, #f4faf6, #e3f0e7);
+  
+  font-size:clamp(12px, 3vw, 18px);
+  font-weight:800;
+  cursor:pointer;
+  
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  
+  transition:.2s;
+  user-select:none;
+}
+
+.choice-cell:active{
+  transform:scale(.92);
+}
+
+.choice-cell.revealed-mine{
+  background:#fde9e6;
+  border-color:var(--red);
+}
+
+.choice-cell.revealed-empty{
+  background:var(--green-pale);
+  border-color:var(--green);
+}
+
+.choice-cell.disabled{
+  opacity:.5;
+  cursor:default;
+  pointer-events:none;
+}
+
+.guess-buttons{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.guess-btn{
+  flex:1;
+  padding:12px;
+  border:0;
+  border-radius:12px;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.guess-btn:active{
+  transform:scale(.95);
+}
+
+.guess-mine{
+  background:linear-gradient(135deg, #e2574c, #c94539);
+  color:#fff;
+}
+
+.guess-empty{
+  background:linear-gradient(135deg, var(--green), var(--green-dark));
+  color:#fff;
+}
+
+.choice-result{
+  min-height:40px;
+  background:var(--green-pale);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  font-weight:700;
+  color:var(--ink);
+  display:none;
+}
+
+.choice-result.show{
+  display:block;
+}
+
+.choice-result.correct{
+  background:#e4f5ea;
+  color:var(--green-dark);
+}
+
+.choice-result.wrong{
+  background:#ffe4e1;
+  color:var(--red);
+}
+
+/* OVERLAY */
+
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:
+    rgba(20,45,32,.55);
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  z-index:100;
+
+  backdrop-filter:blur(2px);
+}
+
+.overlay.active{
+  display:flex;
+}
+
+.result{
+  width:100%;
+  max-width:340px;
+
+  background:#fff;
+
+  border-radius:22px;
+
+  padding:28px 22px;
+
+  text-align:center;
+
+  box-shadow:var(--shadow);
+}
+
+.result-emoji{
+  font-size:45px;
+}
+
+.result h2{
+  margin:7px 0 5px;
+  font-size:20px;
+}
+
+.result p{
+  color:var(--ink-soft);
+  font-size:13px;
+  line-height:1.8;
+  margin:0 0 17px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="brand">
+
+<div class="logo">
+💣 مین‌روب دونفره
+</div>
+
+<p>
+powered by theozco.
+</p>
+
+</div>
+
+
+<div class="card">
+
+
+<!-- HOME -->
+
+<div
+id="home"
+class="screen active">
+
+<h1 class="title">
+شروع بازی
+</h1>
+
+<p class="sub">
+یک بازی بساز و کد چهار رقمی را برای حریفت بفرست،
+یا با کدی که داری وارد بازی شو.
+</p>
+
+<div class="stack">
+
+<button
+id="createBtn"
+class="btn primary">
+
+🎮 ساخت بازی
+
+</button>
+
+<button
+id="joinBtn"
+class="btn secondary">
+
+🔗 پیوستن به بازی
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- JOIN -->
+
+<div
+id="join"
+class="screen">
+
+<h1 class="title">
+پیوستن به بازی
+</h1>
+
+<p class="sub">
+کد چهار رقمی بازی را وارد کن.
+</p>
+
+<input
+id="joinCode"
+class="code-input"
+maxlength="4"
+inputmode="numeric"
+placeholder="۱۲۳۴"
+autocomplete="off">
+
+<div
+id="joinError"
+class="error">
+</div>
+
+<div class="stack">
+
+<button
+id="connectBtn"
+class="btn primary">
+
+اتصال به بازی
+
+</button>
+
+<button
+id="joinBack"
+class="btn outline">
+
+بازگشت
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- HOST WAIT -->
+
+<div
+id="hostWait"
+class="screen">
+
+<h1 class="title">
+منتظر حریف
+</h1>
+
+<p class="sub">
+این کد را برای حریفت بفرست.
+</p>
+
+<div class="code-box">
+
+<div class="code-label">
+کد بازی
+</div>
+
+<div
+id="roomCode"
+class="room-code">
+----</div>
+
+</div>
+
+<button
+id="copyBtn"
+class="btn secondary">
+
+📋 کپی کد
+
+</button>
+
+<div class="waiting">
+
+<span class="spinner"></span>
+
+&nbsp;
+
+در انتظار اتصال حریف...
+
+</div>
+
+<button
+id="cancelBtn"
+class="btn outline">
+
+لغو
+
+</button>
+
+</div>
+
+
+<!-- READY -->
+
+<div
+id="ready"
+class="screen">
+
+<h1 class="title">
+حریف وصل شد! 🎉
+</h1>
+
+<p class="sub">
+میزبان بازی را شروع می‌کند.
+هر نوبت یک بازیکن انتخاب می‌کند.
+</p>
+
+<button
+id="startBtn"
+class="btn primary">
+
+🚀 شروع بازی
+
+</button>
+
+</div>
+
+
+<!-- CHOICE SCREEN -->
+
+<div
+id="choice"
+class="screen">
+
+<div class="players">
+
+<div
+id="mePlayer"
+class="player">
+
+<div class="player-name">
+🟢 شما
+</div>
+
+<div
+id="meScore"
+class="player-score">
+۰
+</div>
+
+</div>
+
+<div
+id="enemyPlayer"
+class="player blue">
+
+<div class="player-name">
+🔵 حریف
+</div>
+
+<div
+id="enemyScore"
+class="player-score">
+۰
+</div>
+
+</div>
+
+</div>
+
+<div
+id="turnInfo"
+class="turn">
+</div>
+
+<div class="choices-grid" id="choicesGrid"></div>
+
+<div class="guess-buttons">
+<button class="guess-btn guess-mine" id="guessMineBtn">💣 مین</button>
+<button class="guess-btn guess-empty" id="guessEmptyBtn">⬜ خالی</button>
+</div>
+
+<div class="choice-result" id="choiceResult"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div
+id="overlay"
+class="overlay">
+
+<div class="result">
+
+<div
+id="resultEmoji"
+class="result-emoji">
+🏆
+</div>
+
+<h2
+id="resultTitle">
+</h2>
+
+<p
+id="resultText">
+</p>
+
+<button
+id="rematchBtn"
+class="btn primary">
+
+🔄 بازی دوباره
+
+</button>
+
+<button
+id="homeBtn"
+class="btn outline">
+
+🏠 بازگشت به خانه
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+(() => {
+
+"use strict";
+
+
+/* =====================================================
+   PEER / CONNECTION
+===================================================== */
+
+let peer = null;
+
+let conn = null;
+
+let role = null;
+
+let roomCode = null;
+
+
+/* =====================================================
+   GAME STATE
+===================================================== */
+
+const ROWS = 16;
+const COLS = 16;
+const TOTAL = ROWS * COLS; // 256
+const MINES = 40; // تقریبا 15% از جدول
+const ROUNDS = TOTAL; // تمام 256 خانه
+
+let mines = new Set();
+
+let myScore = 0;
+let enemyScore = 0;
+
+let gameOver = false;
+let started = false;
+
+let currentRound = 0;
+let currentPlayer = null; // host / guest
+
+let chosenIndices = new Set(); // خانه‌های انتخاب‌شده
+
+let selectedCellIndex = null;
+let selectedGuess = null;
+
+
+/* =====================================================
+   ELEMENT
+===================================================== */
+
+const $ = id => document.getElementById(id);
+
+
+function show(id){
+
+  [
+    "home",
+    "join",
+    "hostWait",
+    "ready",
+    "choice"
+  ].forEach(
+    x =>
+      $(x)
+      .classList
+      .toggle(
+        "active",
+        x === id
+      )
+  );
+
+}
+
+
+/* =====================================================
+   RANDOM ROOM
+===================================================== */
+
+function generateRoom(){
+
+  return String(
+    Math.floor(
+      1000 +
+      Math.random() * 9000
+    )
+  );
+
+}
+
+
+/* =====================================================
+   RANDOM MINES
+===================================================== */
+
+function generateMines(){
+
+  mines = new Set();
+
+  while(mines.size < MINES){
+    mines.add(
+      Math.floor(
+        Math.random() * TOTAL
+      )
+    );
+  }
+
+}
+
+
+/* =====================================================
+   SEND
+===================================================== */
+
+function send(data){
+
+  if(conn && conn.open){
+    conn.send(data);
+  }
+
+}
+
+
+/* =====================================================
+   DESTROY
+===================================================== */
+
+function destroy(){
+
+  if(conn){
+    try{
+      conn.close();
+    }catch(e){}
+    conn = null;
+  }
+
+  if(peer){
+    try{
+      peer.destroy();
+    }catch(e){}
+    peer = null;
+  }
+
+}
+
+
+/* =====================================================
+   CREATE GAME
+===================================================== */
+
+$("createBtn").onclick = function(){
+
+  role = "host";
+
+  roomCode = generateRoom();
+
+  $("roomCode").textContent = roomCode;
+
+  show("hostWait");
+
+  peer = new Peer(
+    roomCode,
+    {
+      host:"0.peerjs.com",
+      port:443,
+      path:"/",
+      secure:true
+    }
+  );
+
+  peer.on(
+    "open",
+    id => {
+      console.log("HOST:", id);
+    }
+  );
+
+  peer.on(
+    "connection",
+    newConn => {
+
+      if(conn){
+        newConn.close();
+        return;
+      }
+
+      conn = newConn;
+      setupConnection();
+
+      conn.on(
+        "open",
+        () => {
+          show("ready");
+        }
+      );
+
+    }
+  );
+
+  peer.on(
+    "error",
+    err => {
+
+      console.error(err);
+
+      if(err.type === "unavailable-id"){
+        alert("این کد قبلاً استفاده شده. دوباره بازی بساز.");
+        destroy();
+        show("home");
+      }
+
+    }
+  );
+
+};
+
+
+/* =====================================================
+   COPY
+===================================================== */
+
+$("copyBtn").onclick = function(){
+
+  navigator.clipboard
+    .writeText(roomCode)
+    .then(
+      () => {
+
+        $("copyBtn").textContent = "✅ کپی شد";
+
+        setTimeout(
+          () => {
+            $("copyBtn").textContent = "📋 کپی کد";
+          },
+          1300
+        );
+
+      }
+    )
+    .catch(
+      () =>
+        alert("کد بازی: " + roomCode)
+    );
+
+};
+
+
+/* =====================================================
+   JOIN
+===================================================== */
+
+$("joinBtn").onclick = function(){
+  $("joinError").textContent = "";
+  show("join");
+};
+
+$("joinBack").onclick = function(){
+  show("home");
+};
+
+
+/* =====================================================
+   CONNECT
+===================================================== */
+
+$("connectBtn").onclick = function(){
+
+  const code = $("joinCode").value.trim();
+
+  if(!/^\d{4}$/.test(code)){
+    $("joinError").textContent = "کد باید دقیقاً ۴ رقم باشد.";
+    return;
+  }
+
+  role = "guest";
+  roomCode = code;
+
+  $("connectBtn").disabled = true;
+  $("connectBtn").textContent = "در حال اتصال...";
+
+  peer = new Peer({
+    host:"0.peerjs.com",
+    port:443,
+    path:"/",
+    secure:true
+  });
+
+  peer.on(
+    "open",
+    () => {
+
+      conn = peer.connect(roomCode, {reliable:true});
+
+      setupConnection();
+
+      conn.on(
+        "open",
+        () => {
+
+          $("connectBtn").disabled = false;
+          $("connectBtn").textContent = "اتصال به بازی";
+
+          $("joinError").textContent = "اتصال برقرار شد.";
+
+        }
+      );
+
+    }
+  );
+
+  peer.on(
+    "error",
+    err => {
+
+      console.error(err);
+
+      $("connectBtn").disabled = false;
+      $("connectBtn").textContent = "اتصال به بازی";
+
+      $("joinError").textContent = "اتصال انجام نشد؛ کد را بررسی کن.";
+
+    }
+  );
+
+};
+
+
+/* =====================================================
+   CONNECTION EVENTS
+===================================================== */
+
+function setupConnection(){
+
+  if(!conn)
+    return;
+
+  conn.on("data", receive);
+
+  conn.on(
+    "close",
+    () => {
+
+      if(!gameOver){
+        alert("ارتباط با حریف قطع شد.");
+      }
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+$("startBtn").onclick = function(){
+
+  generateMines();
+
+  resetGame();
+
+  send({
+    type:"start",
+    mines: [...mines]
+  });
+
+  startLocalGame();
+
+};
+
+
+/* =====================================================
+   RECEIVE
+===================================================== */
+
+function receive(data){
+
+  /* START */
+  if(data.type === "start"){
+
+    mines = new Set(data.mines);
+
+    resetGame();
+
+    startLocalGame();
+
+    return;
+  }
+
+  /* ROUND */
+  if(data.type === "round"){
+
+    processRemoteRound(data);
+
+    return;
+  }
+
+  /* GAME OVER */
+  if(data.type === "gameover"){
+
+    gameOver = true;
+
+    const message = data.winner === role 
+      ? "حریف برنده شد! 💔"
+      : "تو برنده شدی! 🏆";
+
+    const won = data.winner !== role;
+
+    finish(won, message);
+
+    return;
+  }
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetGame(){
+
+  myScore = 0;
+  enemyScore = 0;
+  gameOver = false;
+  started = false;
+  currentRound = 0;
+  chosenIndices = new Set();
+  selectedCellIndex = null;
+  selectedGuess = null;
+
+}
+
+
+/* =====================================================
+   START LOCAL
+===================================================== */
+
+function startLocalGame(){
+
+  started = true;
+  gameOver = false;
+  currentRound = 0;
+  currentPlayer = role;
+
+  show("choice");
+
+  buildChoices();
+
+  nextRound();
+
+}
+
+
+/* =====================================================
+   BUILD CHOICES
+===================================================== */
+
+function buildChoices(){
+
+  const grid = $("choicesGrid");
+  grid.innerHTML = "";
+
+  for(let i = 0; i < TOTAL; i++){
+
+    const cell = document.createElement("div");
+    cell.className = "choice-cell";
+    cell.dataset.index = i;
+    cell.textContent = "❓";
+
+    cell.addEventListener("click", () => {
+      if(!gameOver && currentPlayer === role && selectedCellIndex === null){
+        selectCell(i, cell);
+      }
+    });
+
+    grid.appendChild(cell);
+
+  }
+
+}
+
+
+/* =====================================================
+   SELECT CELL
+===================================================== */
+
+function selectCell(index, cellElement){
+
+  selectedCellIndex = index;
+
+  $("guessMineBtn").disabled = false;
+  $("guessEmptyBtn").disabled = false;
+
+}
+
+
+/* =====================================================
+   GUESS MINE
+===================================================== */
+
+$("guessMineBtn").onclick = function(){
+
+  if(selectedCellIndex === null)
+    return;
+
+  processGuess(selectedCellIndex, "mine");
+
+};
+
+
+/* =====================================================
+   GUESS EMPTY
+===================================================== */
+
+$("guessEmptyBtn").onclick = function(){
+
+  if(selectedCellIndex === null)
+    return;
+
+  processGuess(selectedCellIndex, "empty");
+
+};
+
+
+/* =====================================================
+   PROCESS GUESS
+===================================================== */
+
+function processGuess(cellIndex, guess){
+
+  if(chosenIndices.has(cellIndex))
+    return;
+
+  const isMine = mines.has(cellIndex);
+  const isCorrect = (isMine && guess === "mine") || (!isMine && guess === "empty");
+
+  let points = 0;
+
+  if(isCorrect){
+    points = isMine ? 40 : 5;
+    myScore += points;
+  }
+
+  chosenIndices.add(cellIndex);
+
+  revealCell(cellIndex, isMine, isCorrect, points);
+
+  // ارسال به حریف
+  send({
+    type:"round",
+    cellIndex: cellIndex,
+    isMine: isMine,
+    guess: guess,
+    isCorrect: isCorrect,
+    points: points,
+    player: role
+  });
+
+  selectedCellIndex = null;
+  selectedGuess = null;
+
+  $("guessMineBtn").disabled = true;
+  $("guessEmptyBtn").disabled = true;
+
+  setTimeout(
+    () => {
+
+      currentRound++;
+
+      if(currentRound >= ROUNDS){
+        endGame();
+        return;
+      }
+
+      // تغییر نوبت
+      currentPlayer = currentPlayer === "host" ? "guest" : "host";
+
+      if(currentPlayer === role){
+        nextRound();
+      } else {
+        waitForRemote();
+      }
+
+      updateUI();
+
+    },
+    1500
+  );
+
+}
+
+
+/* =====================================================
+   REVEAL CELL
+===================================================== */
+
+function revealCell(index, isMine, isCorrect, points){
+
+  const cells = document.querySelectorAll(".choice-cell");
+  const cell = cells[index];
+
+  if(!cell)
+    return;
+
+  if(isMine){
+    cell.classList.add("revealed-mine");
+    cell.textContent = "💣";
+  } else {
+    cell.classList.add("revealed-empty");
+    cell.textContent = "✅";
+  }
+
+  cell.classList.add("disabled");
+
+  const result = $("choiceResult");
+  result.classList.add("show");
+
+  if(isCorrect){
+    result.classList.add("correct");
+    result.classList.remove("wrong");
+    result.textContent = `✅ درست! +${toFa(points)} امتیاز`;
+  } else {
+    result.classList.add("wrong");
+    result.classList.remove("correct");
+    result.textContent = `❌ اشتباه! هیچ امتیازی نگرفتی`;
+  }
+
+}
+
+
+/* =====================================================
+   PROCESS REMOTE ROUND
+===================================================== */
+
+function processRemoteRound(data){
+
+  if(!chosenIndices.has(data.cellIndex)){
+    chosenIndices.add(data.cellIndex);
+  }
+
+  if(data.isCorrect){
+    enemyScore += data.points;
+  }
+
+  revealRemoteCell(data.cellIndex, data.isMine, data.isCorrect, data.points);
+
+  currentRound++;
+
+  setTimeout(
+    () => {
+
+      if(currentRound >= ROUNDS){
+        endGame();
+        return;
+      }
+
+      currentPlayer = currentPlayer === "host" ? "guest" : "host";
+
+      if(currentPlayer === role){
+        nextRound();
+      } else {
+        waitForRemote();
+      }
+
+      updateUI();
+
+    },
+    1500
+  );
+
+}
+
+
+/* =====================================================
+   REVEAL REMOTE CELL
+===================================================== */
+
+function revealRemoteCell(index, isMine, isCorrect, points){
+
+  const cells = document.querySelectorAll(".choice-cell");
+  const cell = cells[index];
+
+  if(!cell)
+    return;
+
+  if(isMine){
+    cell.classList.add("revealed-mine");
+    cell.textContent = "💣";
+  } else {
+    cell.classList.add("revealed-empty");
+    cell.textContent = "✅";
+  }
+
+  cell.classList.add("disabled");
+
+}
+
+
+/* =====================================================
+   NEXT ROUND
+===================================================== */
+
+function nextRound(){
+
+  $("choiceResult").classList.remove("show");
+
+  $("guessMineBtn").disabled = false;
+  $("guessEmptyBtn").disabled = false;
+
+  updateUI();
+
+}
+
+
+/* =====================================================
+   WAIT FOR REMOTE
+===================================================== */
+
+function waitForRemote(){
+
+  $("choiceResult").classList.remove("show");
+
+  $("guessMineBtn").disabled = true;
+  $("guessEmptyBtn").disabled = true;
+
+  updateUI();
+
+}
+
+
+/* =====================================================
+   UPDATE UI
+===================================================== */
+
+function updateUI(){
+
+  $("meScore").textContent = toFa(myScore);
+  $("enemyScore").textContent = toFa(enemyScore);
+
+  const currentPlayerName = currentPlayer === "host" ? "🟢" : "🔵";
+
+  $("mePlayer").classList.toggle(
+    "active",
+    currentPlayer === role
+  );
+
+  $("enemyPlayer").classList.toggle(
+    "active",
+    currentPlayer !== role
+  );
+
+  if(currentPlayer === role){
+    $("turnInfo").textContent = "نوبت تو! انتخاب کن";
+  } else {
+    $("turnInfo").textContent = "در انتظار نوبت حریف...";
+  }
+
+}
+
+
+/* =====================================================
+   END GAME
+===================================================== */
+
+function endGame(){
+
+  gameOver = true;
+
+  const won = myScore > enemyScore;
+
+  const message = won 
+    ? `برنده شدی! 🏆\nتو: ${myScore} | حریف: ${enemyScore}`
+    : myScore === enemyScore
+      ? `مساوی شد! 🤝\nتو: ${myScore} | حریف: ${enemyScore}`
+      : `باختی! 💔\nتو: ${myScore} | حریف: ${enemyScore}`;
+
+  send({
+    type:"gameover",
+    winner: won ? role : (role === "host" ? "guest" : "host"),
+    myScore: myScore,
+    enemyScore: enemyScore
+  });
+
+  finish(won, message);
+
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+function finish(won, message){
+
+  gameOver = true;
+
+  $("resultEmoji").textContent = won ? "🏆" : "💔";
+
+  $("resultTitle").textContent = won ? "بردی!" : "باختی!";
+
+  $("resultText").textContent = message;
+
+  $("rematchBtn").style.display = role === "host" ? "block" : "none";
+
+  $("overlay").classList.add("active");
+
+}
+
+
+/* =====================================================
+   REMATCH
+===================================================== */
+
+$("rematchBtn").onclick = function(){
+
+  if(role !== "host")
+    return;
+
+  generateMines();
+
+  resetGame();
+
+  send({
+    type:"start",
+    mines: [...mines]
+  });
+
+  $("overlay").classList.remove("active");
+
+  startLocalGame();
+
+};
+
+
+/* =====================================================
+   HOME
+===================================================== */
+
+$("homeBtn").onclick = function(){
+
+  $("overlay").classList.remove("active");
+
+  destroy();
+
+  role = null;
+  roomCode = null;
+
+  show("home");
+
+};
+
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+$("cancelBtn").onclick = function(){
+
+  destroy();
+
+  show("home");
+
+};
+
+
+/* =====================================================
+   PERSIAN NUMBERS
+===================================================== */
+
+function toFa(n){
+
+  const fa = [
+    "۰","۱","۲","۳","۴",
+    "۵","۶","۷","۸","۹"
+  ];
+
+  return String(n)
+    .split("")
+    .map(
+      x =>
+        /\d/.test(x)
+          ? fa[x]
+          : x
+    )
+    .join("");
+
+}
+
+})();
+</script>
+
+</body>
+</html>
