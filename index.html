@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Minesweeper Duel</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:#10131a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.app{
+  width:min(95vw,520px);
+  text-align:center;
+}
+
+h1{
+  margin:10px 0 5px;
+  font-size:28px;
+}
+
+.subtitle{
+  color:#9da5b4;
+  margin-bottom:15px;
+}
+
+.panel{
+  background:#191e28;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:15px;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 18px;
+  margin:4px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.primary{
+  background:#4f8cff;
+  color:white;
+}
+
+.success{
+  background:#28c76f;
+  color:white;
+}
+
+.danger{
+  background:#ff4d4f;
+  color:white;
+}
+
+input,textarea{
+  width:100%;
+  border:1px solid #343b48;
+  background:#0e1117;
+  color:white;
+  border-radius:10px;
+  padding:12px;
+  margin:6px 0;
+  outline:none;
+}
+
+textarea{
+  height:90px;
+  resize:none;
+  direction:ltr;
+  font-size:11px;
+}
+
+.status{
+  padding:10px;
+  background:#11151d;
+  border-radius:10px;
+  margin-top:8px;
+  color:#aeb7c7;
+}
+
+.scores{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.score{
+  flex:1;
+  background:#191e28;
+  padding:10px;
+  border-radius:10px;
+}
+
+.score b{
+  display:block;
+  font-size:22px;
+}
+
+.board{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:3px;
+  width:100%;
+  max-width:500px;
+  margin:auto;
+}
+
+.cell{
+  aspect-ratio:1;
+  border:0;
+  border-radius:4px;
+  background:#343b48;
+  color:white;
+  font-weight:bold;
+  font-size:clamp(12px,3.5vw,19px);
+  padding:0;
+  margin:0;
+}
+
+.cell:hover{
+  background:#414a59;
+}
+
+.cell.open{
+  background:#202631;
+}
+
+.cell.mine{
+  background:#b83232;
+}
+
+.cell.flag{
+  background:#7256a3;
+}
+
+.hidden{
+  display:none;
+}
+
+.small{
+  font-size:12px;
+  color:#8992a3;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>💣 Minesweeper Duel</h1>
+<div class="subtitle">مین‌روب دونفره</div>
+
+<div id="menu" class="panel">
+
+<button class="primary" onclick="createGame()">
+ساخت بازی
+</button>
+
+<button class="success" onclick="showJoin()">
+ورود به بازی
+</button>
+
+<div id="joinBox" class="hidden">
+
+<input id="joinCode"
+       placeholder="کد بازی را وارد کنید">
+
+<button class="success" onclick="joinGame()">
+ورود
+</button>
+
+</div>
+
+<div id="roomBox" class="hidden">
+
+<p>کد بازی شما:</p>
+
+<div id="roomCode"
+     style="font-size:28px;font-weight:bold">
+</div>
+
+<p class="small">
+این کد را برای بازیکن دوم بفرستید.
+</p>
+
+</div>
+
+<div id="menuStatus" class="status">
+آماده شروع
+</div>
+
+</div>
+
+
+<div id="game" class="hidden">
+
+<div class="scores">
+
+<div class="score">
+بازیکن ۱
+<b id="score1">0</b>
+</div>
+
+<div class="score">
+بازیکن ۲
+<b id="score2">0</b>
+</div>
+
+</div>
+
+<div class="panel">
+
+<div id="gameStatus" class="status">
+بازی شروع شد
+</div>
+
+</div>
+
+<div id="board" class="board"></div>
+
+<br>
+
+<button class="danger" onclick="location.reload()">
+بازی جدید
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   تنظیمات بازی
+========================= */
+
+const ROWS = 10;
+const COLS = 10;
+const MINES = 15;
+
+let board = [];
+let opened = [];
+let flags = [];
+
+let player = 1;
+let scores = [0,0];
+
+let room = null;
+
+
+/* =========================
+   ساخت Room
+========================= */
+
+function randomCode(){
+
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let code = "";
+
+  for(let i=0;i<5;i++){
+    code += chars[
+      Math.floor(Math.random()*chars.length)
+    ];
+  }
+
+  return code;
+}
+
+
+function createGame(){
+
+  room = randomCode();
+
+  document
+    .getElementById("roomBox")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("roomCode")
+    .textContent = room;
+
+  document
+    .getElementById("menuStatus")
+    .textContent =
+    "بازی ساخته شد. کد را برای بازیکن دوم بفرستید.";
+
+  /*
+    برای نسخه واقعی آنلاین باید اینجا
+    signaling انجام شود.
+  */
+
+  startLocalGame(1);
+}
+
+
+function showJoin(){
+
+  document
+    .getElementById("joinBox")
+    .classList.remove("hidden");
+
+}
+
+
+function joinGame(){
+
+  const code =
+    document.getElementById("joinCode").value
+    .trim()
+    .toUpperCase();
+
+  if(!code){
+
+    alert("کد بازی را وارد کنید");
+
+    return;
+  }
+
+  room = code;
+
+  startLocalGame(2);
+
+}
+
+
+/* =========================
+   ساخت صفحه مین
+========================= */
+
+function startLocalGame(p){
+
+  player = p;
+
+  document
+    .getElementById("menu")
+    .classList.add("hidden");
+
+  document
+    .getElementById("game")
+    .classList.remove("hidden");
+
+  generateBoard();
+
+  renderBoard();
+
+  document
+    .getElementById("gameStatus")
+    .textContent =
+    `شما بازیکن ${player} هستید`;
+
+}
+
+
+/* =========================
+   تولید مین‌ها
+========================= */
+
+function generateBoard(){
+
+  board =
+    Array.from(
+      {length:ROWS},
+      () => Array(COLS).fill(0)
+    );
+
+  opened =
+    Array.from(
+      {length:ROWS},
+      () => Array(COLS).fill(false)
+    );
+
+  flags =
+    Array.from(
+      {length:ROWS},
+      () => Array(COLS).fill(false)
+    );
+
+
+  let placed = 0;
+
+  while(placed < MINES){
+
+    const r =
+      Math.floor(Math.random()*ROWS);
+
+    const c =
+      Math.floor(Math.random()*COLS);
+
+    if(board[r][c] !== "M"){
+
+      board[r][c] = "M";
+
+      placed++;
+
+    }
+
+  }
+
+
+  for(let r=0;r<ROWS;r++){
+
+    for(let c=0;c<COLS;c++){
+
+      if(board[r][c] === "M")
+        continue;
+
+      let count = 0;
+
+      for(let dr=-1;dr<=1;dr++){
+
+        for(let dc=-1;dc<=1;dc++){
+
+          if(dr===0 && dc===0)
+            continue;
+
+          const nr=r+dr;
+          const nc=c+dc;
+
+          if(
+            nr>=0 &&
+            nr<ROWS &&
+            nc>=0 &&
+            nc<COLS &&
+            board[nr][nc]==="M"
+          ){
+
+            count++;
+
+          }
+
+        }
+
+      }
+
+      board[r][c]=count;
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   نمایش صفحه
+========================= */
+
+function renderBoard(){
+
+  const container =
+    document.getElementById("board");
+
+  container.innerHTML="";
+
+
+  for(let r=0;r<ROWS;r++){
+
+    for(let c=0;c<COLS;c++){
+
+      const btn =
+        document.createElement("button");
+
+      btn.className="cell";
+
+
+      if(opened[r][c]){
+
+        btn.classList.add("open");
+
+        if(board[r][c]==="M"){
+
+          btn.classList.add("mine");
+
+          btn.textContent="💣";
+
+        }
+        else if(board[r][c]>0){
+
+          btn.textContent =
+            board[r][c];
+
+        }
+
+      }
+      else if(flags[r][c]){
+
+        btn.classList.add("flag");
+
+        btn.textContent="🚩";
+
+      }
+
+
+      btn.onclick =
+        () => openCell(r,c);
+
+      btn.oncontextmenu =
+        e => {
+
+          e.preventDefault();
+
+          toggleFlag(r,c);
+
+        };
+
+
+      container.appendChild(btn);
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   باز کردن خانه
+========================= */
+
+function openCell(r,c){
+
+  if(opened[r][c] || flags[r][c])
+    return;
+
+
+  opened[r][c]=true;
+
+
+  if(board[r][c]==="M"){
+
+    revealMines();
+
+    document
+      .getElementById("gameStatus")
+      .textContent =
+      `💥 بازیکن ${player} مین را زد!`;
+
+    return;
+
+  }
+
+
+  scores[player-1]++;
+
+  updateScores();
+
+
+  if(board[r][c]===0){
+
+    flood(r,c);
+
+  }
+
+
+  renderBoard();
+
+  checkWin();
+
+}
+
+
+/* =========================
+   باز کردن ناحیه خالی
+========================= */
+
+function flood(r,c){
+
+  for(let dr=-1;dr<=1;dr++){
+
+    for(let dc=-1;dc<=1;dc++){
+
+      const nr=r+dr;
+      const nc=c+dc;
+
+      if(
+        nr>=0 &&
+        nr<ROWS &&
+        nc>=0 &&
+        nc<COLS &&
+        !opened[nr][nc] &&
+        board[nr][nc]!=="M"
+      ){
+
+        opened[nr][nc]=true;
+
+        if(board[nr][nc]===0)
+          flood(nr,nc);
+
+      }
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   پرچم
+========================= */
+
+function toggleFlag(r,c){
+
+  if(opened[r][c])
+    return;
+
+  flags[r][c] =
+    !flags[r][c];
+
+  renderBoard();
+
+}
+
+
+/* =========================
+   نمایش مین‌ها
+========================= */
+
+function revealMines(){
+
+  for(let r=0;r<ROWS;r++){
+
+    for(let c=0;c<COLS;c++){
+
+      if(board[r][c]==="M")
+        opened[r][c]=true;
+
+    }
+
+  }
+
+  renderBoard();
+
+}
+
+
+/* =========================
+   امتیاز
+========================= */
+
+function updateScores(){
+
+  document
+    .getElementById("score1")
+    .textContent=scores[0];
+
+  document
+    .getElementById("score2")
+    .textContent=scores[1];
+
+}
+
+
+/* =========================
+   پایان بازی
+========================= */
+
+function checkWin(){
+
+  let total=0;
+
+  for(let r=0;r<ROWS;r++){
+
+    for(let c=0;c<COLS;c++){
+
+      if(
+        board[r][c]!=="M" &&
+        opened[r][c]
+      ){
+
+        total++;
+
+      }
+
+    }
+
+  }
+
+
+  if(total === ROWS*COLS-MINES){
+
+    const winner =
+      scores[0] > scores[1]
+      ? "بازیکن ۱"
+      : scores[1] > scores[0]
+      ? "بازیکن ۲"
+      : "مساوی";
+
+    document
+      .getElementById("gameStatus")
+      .textContent =
+      `🏆 ${winner} برنده شد!`;
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
