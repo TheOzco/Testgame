@@ -1,163 +1,411 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Minesweeper Duel</title>
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no">
+
+<title>💣 مین‌روب دونفره</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+  --bg:#eef8f1;
+  --card:#ffffff;
+  --green:#2f9e63;
+  --green-dark:#227a4c;
+  --blue:#2e7dbb;
+  --red:#e2574c;
+  --text:#1e3a2b;
+  --soft:#667a70;
+  --tile:#e9f3ec;
+}
+
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
 
+html,body{
+  min-height:100%;
+}
+
 body{
   margin:0;
-  min-height:100vh;
-  font-family:Arial,sans-serif;
-  background:#10131a;
-  color:white;
+  padding:18px 12px;
+  font-family:'Vazirmatn',sans-serif;
+  color:var(--text);
+
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(46,125,187,.12),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(47,158,99,.15),
+      transparent 50%
+    ),
+    linear-gradient(
+      145deg,
+      #eef8f1,
+      #dcefe3
+    );
+
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
 .app{
-  width:min(95vw,520px);
-  text-align:center;
+  width:100%;
+  max-width:460px;
 }
 
-h1{
-  margin:10px 0 5px;
-  font-size:28px;
+.logo{
+  text-align:center;
+  font-size:27px;
+  font-weight:800;
+  color:var(--green-dark);
+  margin-bottom:5px;
 }
 
 .subtitle{
-  color:#9da5b4;
-  margin-bottom:15px;
+  text-align:center;
+  color:var(--soft);
+  font-size:13px;
+  margin-bottom:18px;
 }
 
-.panel{
-  background:#191e28;
-  border-radius:16px;
-  padding:15px;
-  margin-bottom:15px;
+.card{
+  background:var(--card);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:
+    0 15px 40px rgba(35,90,60,.18);
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+}
+
+h1{
+  font-size:19px;
+  margin:0 0 7px;
+}
+
+p{
+  color:var(--soft);
+  font-size:13px;
+  line-height:1.9;
+  margin:0 0 18px;
 }
 
 button{
+  width:100%;
   border:0;
-  border-radius:10px;
-  padding:12px 18px;
-  margin:4px;
-  font-size:15px;
-  font-weight:bold;
+  border-radius:13px;
+  padding:14px;
+  margin-top:9px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
   cursor:pointer;
 }
 
+button:active{
+  transform:scale(.97);
+}
+
 .primary{
-  background:#4f8cff;
+  background:linear-gradient(
+    135deg,
+    var(--green),
+    var(--green-dark)
+  );
   color:white;
 }
 
-.success{
-  background:#28c76f;
-  color:white;
+.secondary{
+  background:#e5f1fa;
+  color:#215f92;
 }
 
-.danger{
-  background:#ff4d4f;
-  color:white;
+.outline{
+  background:white;
+  color:var(--soft);
+  border:1px solid #dce8e0;
 }
 
-input,textarea{
+input{
   width:100%;
-  border:1px solid #343b48;
-  background:#0e1117;
-  color:white;
-  border-radius:10px;
-  padding:12px;
-  margin:6px 0;
+  border:1.5px solid #d7e9dd;
+  background:#f0f9f3;
+  border-radius:13px;
+  padding:14px;
+  font-family:inherit;
+  font-size:20px;
+  text-align:center;
+  letter-spacing:4px;
+  direction:ltr;
   outline:none;
 }
 
-textarea{
-  height:90px;
-  resize:none;
+input:focus{
+  border-color:var(--green);
+}
+
+.code-box{
+  background:#e5f6eb;
+  border:2px dashed var(--green);
+  border-radius:16px;
+  padding:18px;
+  text-align:center;
+  margin:15px 0;
+}
+
+.code-label{
+  color:var(--soft);
+  font-size:12px;
+}
+
+.room-code{
+  font-size:38px;
+  letter-spacing:8px;
+  font-weight:800;
+  color:var(--green-dark);
   direction:ltr;
-  font-size:11px;
+  margin-top:5px;
 }
 
 .status{
-  padding:10px;
-  background:#11151d;
-  border-radius:10px;
-  margin-top:8px;
-  color:#aeb7c7;
+  text-align:center;
+  color:var(--soft);
+  font-size:13px;
+  margin-top:15px;
+  min-height:22px;
 }
 
-.scores{
+.error{
+  color:var(--red);
+  text-align:center;
+  font-size:13px;
+  margin-top:10px;
+}
+
+/* GAME */
+
+.players{
   display:flex;
   gap:8px;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
-.score{
+.player{
   flex:1;
-  background:#191e28;
   padding:10px;
-  border-radius:10px;
+  border-radius:13px;
+  background:#e5f6eb;
+  text-align:center;
+  font-size:12px;
+  transition:.2s;
 }
 
-.score b{
+.player.blue{
+  background:#e5f1fa;
+}
+
+.player.active{
+  box-shadow:0 0 0 2px var(--green);
+  transform:translateY(-2px);
+}
+
+.player.blue.active{
+  box-shadow:0 0 0 2px var(--blue);
+}
+
+.player strong{
   display:block;
-  font-size:22px;
+  font-size:14px;
 }
 
-.board{
+.turn{
+  text-align:center;
+  font-size:13px;
+  font-weight:700;
+  color:var(--green-dark);
+  min-height:22px;
+  margin-bottom:8px;
+}
+
+.progress{
+  height:8px;
+  background:#edf4ef;
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:12px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--green);
+  transition:.2s;
+}
+
+.target{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+  color:var(--soft);
+  font-size:13px;
+}
+
+.target strong{
+  color:var(--green-dark);
+  font-size:20px;
+}
+
+.grid{
   display:grid;
-  grid-template-columns:repeat(10,1fr);
-  gap:3px;
-  width:100%;
-  max-width:500px;
-  margin:auto;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+}
+
+.grid.disabled{
+  opacity:.65;
 }
 
 .cell{
   aspect-ratio:1;
-  border:0;
-  border-radius:4px;
-  background:#343b48;
-  color:white;
-  font-weight:bold;
-  font-size:clamp(12px,3.5vw,19px);
-  padding:0;
-  margin:0;
+  border-radius:13px;
+  border:1.5px solid #d5e8dc;
+  background:var(--tile);
+  color:transparent;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:22px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.15s;
+  user-select:none;
 }
 
-.cell:hover{
-  background:#414a59;
+.cell::after{
+  content:"";
+  width:8px;
+  height:8px;
+  background:#bcdac7;
+  border-radius:50%;
+}
+
+.cell:active{
+  transform:scale(.93);
 }
 
 .cell.open{
-  background:#202631;
+  color:white;
+  background:
+    linear-gradient(
+      145deg,
+      var(--green),
+      var(--green-dark)
+    );
+  border-color:transparent;
 }
 
-.cell.mine{
-  background:#b83232;
-}
-
-.cell.flag{
-  background:#7256a3;
-}
-
-.hidden{
+.cell.open::after{
   display:none;
 }
 
-.small{
-  font-size:12px;
-  color:#8992a3;
+.cell.wrong{
+  color:white;
+  background:var(--red);
+  border-color:var(--red);
 }
+
+.cell.wrong::after{
+  display:none;
+}
+
+.info{
+  text-align:center;
+  color:var(--soft);
+  font-size:11px;
+  margin-top:13px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(20,45,32,.58);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+
+.overlay.show{
+  display:flex;
+}
+
+.result{
+  width:100%;
+  max-width:340px;
+  background:white;
+  border-radius:22px;
+  padding:28px 22px;
+  text-align:center;
+}
+
+.result .emoji{
+  font-size:45px;
+}
+
+.result h2{
+  margin:8px 0;
+}
+
+.result p{
+  margin-bottom:15px;
+}
+
+.wait{
+  text-align:center;
+  margin:20px 0;
+}
+
+.spinner{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border:3px solid #d8ece0;
+  border-top-color:var(--green);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
 </style>
 </head>
 
@@ -165,81 +413,265 @@ textarea{
 
 <div class="app">
 
-<h1>💣 Minesweeper Duel</h1>
-<div class="subtitle">مین‌روب دونفره</div>
-
-<div id="menu" class="panel">
-
-<button class="primary" onclick="createGame()">
-ساخت بازی
-</button>
-
-<button class="success" onclick="showJoin()">
-ورود به بازی
-</button>
-
-<div id="joinBox" class="hidden">
-
-<input id="joinCode"
-       placeholder="کد بازی را وارد کنید">
-
-<button class="success" onclick="joinGame()">
-ورود
-</button>
-
+<div class="logo">
+💣 مین‌روب دونفره
 </div>
 
-<div id="roomBox" class="hidden">
-
-<p>کد بازی شما:</p>
-
-<div id="roomCode"
-     style="font-size:28px;font-weight:bold">
+<div class="subtitle">
+TheOzCo Multiplayer
 </div>
 
-<p class="small">
-این کد را برای بازیکن دوم بفرستید.
+
+<div class="card">
+
+<!-- HOME -->
+
+<div id="home" class="screen active">
+
+<h1>شروع بازی</h1>
+
+<p>
+یک بازی بساز و کد چهار رقمی را برای دوستت بفرست،
+یا با کدی که داری وارد بازی شو.
 </p>
 
-</div>
+<button
+class="primary"
+id="createBtn">
+🎮 ساخت بازی
+</button>
 
-<div id="menuStatus" class="status">
-آماده شروع
-</div>
-
-</div>
-
-
-<div id="game" class="hidden">
-
-<div class="scores">
-
-<div class="score">
-بازیکن ۱
-<b id="score1">0</b>
-</div>
-
-<div class="score">
-بازیکن ۲
-<b id="score2">0</b>
-</div>
+<button
+class="secondary"
+id="joinBtn">
+🔗 پیوستن به بازی
+</button>
 
 </div>
 
-<div class="panel">
 
-<div id="gameStatus" class="status">
-بازی شروع شد
+<!-- JOIN -->
+
+<div id="joinScreen" class="screen">
+
+<h1>
+پیوستن به بازی
+</h1>
+
+<p>
+کد چهار رقمی بازی را وارد کن.
+</p>
+
+<input
+id="codeInput"
+maxlength="4"
+inputmode="numeric"
+placeholder="1234">
+
+<div
+id="joinError"
+class="error">
+</div>
+
+<button
+class="primary"
+id="connectBtn">
+اتصال
+</button>
+
+<button
+class="outline"
+id="backBtn">
+بازگشت
+</button>
+
+</div>
+
+
+<!-- HOST WAIT -->
+
+<div id="hostScreen" class="screen">
+
+<h1>
+بازی ساخته شد 🎮
+</h1>
+
+<p>
+این کد را برای بازیکن دوم بفرست.
+</p>
+
+<div class="code-box">
+
+<div class="code-label">
+کد بازی
+</div>
+
+<div
+id="roomCode"
+class="room-code">
+----
 </div>
 
 </div>
 
-<div id="board" class="board"></div>
+<button
+class="secondary"
+id="copyBtn">
+📋 کپی کد
+</button>
 
-<br>
+<div class="wait">
 
-<button class="danger" onclick="location.reload()">
-بازی جدید
+<span class="spinner"></span>
+
+<div class="status">
+در انتظار اتصال حریف...
+</div>
+
+</div>
+
+<button
+class="outline"
+id="cancelBtn">
+لغو
+</button>
+
+</div>
+
+
+<!-- READY -->
+
+<div id="readyScreen" class="screen">
+
+<h1>
+حریف وصل شد! 🎉
+</h1>
+
+<p>
+هر دو بازیکن آماده‌اند.
+بازی را شروع کن.
+</p>
+
+<button
+class="primary"
+id="startBtn">
+🚀 شروع بازی
+</button>
+
+</div>
+
+
+<!-- GAME -->
+
+<div id="gameScreen" class="screen">
+
+<div class="players">
+
+<div
+id="mePlayer"
+class="player">
+
+<strong>🟢 شما</strong>
+
+<span id="meTurn">
+</span>
+
+</div>
+
+<div
+id="enemyPlayer"
+class="player blue">
+
+<strong>🔵 حریف</strong>
+
+<span id="enemyTurn">
+</span>
+
+</div>
+
+</div>
+
+
+<div
+id="turnText"
+class="turn">
+</div>
+
+
+<div class="progress">
+
+<div
+id="progressBar"
+class="progress-bar">
+</div>
+
+</div>
+
+
+<div class="target">
+
+<span>
+دنبال عدد
+<strong id="target">
+۱
+</strong>
+بگرد
+</span>
+
+<span id="roomText">
+</span>
+
+</div>
+
+
+<div
+id="grid"
+class="grid">
+</div>
+
+
+<div class="info">
+روی خانه درست بزن. اگر اشتباه کنی نوبت به حریف می‌رسد.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div
+id="overlay"
+class="overlay">
+
+<div class="result">
+
+<div
+id="resultEmoji"
+class="emoji">
+🏆
+</div>
+
+<h2 id="resultTitle">
+بردی!
+</h2>
+
+<p id="resultText">
+</p>
+
+<button
+class="primary"
+id="againBtn">
+🔄 بازی دوباره
+</button>
+
+<button
+class="outline"
+id="homeBtn">
+🏠 خانه
 </button>
 
 </div>
@@ -249,473 +681,1358 @@ textarea{
 
 <script>
 
-/* =========================
-   تنظیمات بازی
-========================= */
+(() => {
 
-const ROWS = 10;
-const COLS = 10;
-const MINES = 15;
+"use strict";
+
+
+/* ==================================================
+   VARIABLES
+================================================== */
+
+let peer = null;
+let connection = null;
+
+let role = null;
+// host / guest
+
+let roomCode = null;
 
 let board = [];
-let opened = [];
-let flags = [];
 
-let player = 1;
-let scores = [0,0];
+let target = 1;
 
-let room = null;
+let revealed = new Set();
+
+let currentTurn = "host";
+
+let gameStarted = false;
+
+let gameFinished = false;
 
 
-/* =========================
-   ساخت Room
-========================= */
+/* ==================================================
+   ELEMENTS
+================================================== */
 
-function randomCode(){
+const $ = id =>
+  document.getElementById(id);
 
-  const chars =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-  let code = "";
+const screens = [
+  "home",
+  "joinScreen",
+  "hostScreen",
+  "readyScreen",
+  "gameScreen"
+];
 
-  for(let i=0;i<5;i++){
-    code += chars[
-      Math.floor(Math.random()*chars.length)
+
+function showScreen(id){
+
+  screens.forEach(screen => {
+
+    $(screen).classList.remove("active");
+
+  });
+
+  $(id).classList.add("active");
+
+}
+
+
+/* ==================================================
+   ROOM CODE
+================================================== */
+
+function generateCode(){
+
+  return String(
+    Math.floor(
+      1000 +
+      Math.random() * 9000
+    )
+  );
+
+}
+
+
+/* ==================================================
+   BOARD
+================================================== */
+
+function createBoard(){
+
+  const numbers =
+    Array.from(
+      {length:16},
+      (_,i) => i + 1
+    );
+
+
+  for(
+    let i = numbers.length - 1;
+    i > 0;
+    i--
+  ){
+
+    const j =
+      Math.floor(
+        Math.random() * (i + 1)
+      );
+
+    [
+      numbers[i],
+      numbers[j]
+    ] =
+    [
+      numbers[j],
+      numbers[i]
     ];
+
   }
 
-  return code;
+
+  return numbers;
+
 }
+
+
+/* ==================================================
+   RESET GAME
+================================================== */
+
+function resetGame(){
+
+  revealed =
+    new Set();
+
+  target = 1;
+
+  gameFinished = false;
+
+}
+
+
+/* ==================================================
+   SEND
+================================================== */
+
+function send(data){
+
+  if(
+    connection &&
+    connection.open
+  ){
+
+    connection.send(data);
+
+  }
+
+}
+
+
+/* ==================================================
+   CLOSE PEER
+================================================== */
+
+function destroyConnection(){
+
+  if(connection){
+
+    try{
+      connection.close();
+    }catch(e){}
+
+    connection = null;
+
+  }
+
+
+  if(peer){
+
+    try{
+      peer.destroy();
+    }catch(e){}
+
+    peer = null;
+
+  }
+
+}
+
+
+/* ==================================================
+   CREATE GAME
+================================================== */
+
+$("createBtn").onclick =
+  createGame;
 
 
 function createGame(){
 
-  room = randomCode();
+  role = "host";
 
-  document
-    .getElementById("roomBox")
-    .classList.remove("hidden");
+  roomCode =
+    generateCode();
 
-  document
-    .getElementById("roomCode")
-    .textContent = room;
 
-  document
-    .getElementById("menuStatus")
-    .textContent =
-    "بازی ساخته شد. کد را برای بازیکن دوم بفرستید.";
+  showScreen("hostScreen");
+
+  $("roomCode").textContent =
+    roomCode;
+
 
   /*
-    برای نسخه واقعی آنلاین باید اینجا
-    signaling انجام شود.
+    اینجا PeerJS را با همان
+    کد چهار رقمی می‌سازیم.
+
+    بنابراین Peer ID واقعی ما
+    همین ۴ رقم است.
   */
 
-  startLocalGame(1);
+  peer =
+    new Peer(
+      roomCode,
+      {
+        host:"0.peerjs.com",
+        port:443,
+        path:"/",
+        secure:true
+      }
+    );
+
+
+  peer.on(
+    "open",
+    id => {
+
+      console.log(
+        "Host Peer ID:",
+        id
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "connection",
+    conn => {
+
+      /*
+        اگر قبلاً حریفی وصل است،
+        اتصال دوم رد می‌شود.
+      */
+
+      if(connection){
+
+        conn.close();
+
+        return;
+
+      }
+
+
+      connection = conn;
+
+      setupConnection();
+
+
+      connection.on(
+        "open",
+        () => {
+
+          /*
+            صفحه بازی را هنوز شروع نمی‌کنیم.
+
+            ابتدا حریف باید وصل شود.
+          */
+
+          showScreen(
+            "readyScreen"
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "error",
+    error => {
+
+      console.error(
+        "Peer error:",
+        error
+      );
+
+
+      /*
+        اگر کد تصادفی قبلاً
+        توسط شخص دیگری استفاده شده
+        باشد.
+      */
+
+      if(
+        error.type ===
+        "unavailable-id"
+      ){
+
+        alert(
+          "این کد قبلاً استفاده شده. دوباره بازی بساز."
+        );
+
+        destroyConnection();
+
+        showScreen("home");
+
+      }
+
+    }
+  );
+
 }
 
 
-function showJoin(){
+/* ==================================================
+   COPY CODE
+================================================== */
 
-  document
-    .getElementById("joinBox")
-    .classList.remove("hidden");
+$("copyBtn").onclick = () => {
 
-}
+  navigator.clipboard
+    .writeText(roomCode)
+    .then(() => {
+
+      $("copyBtn").textContent =
+        "✅ کپی شد";
+
+      setTimeout(() => {
+
+        $("copyBtn").textContent =
+          "📋 کپی کد";
+
+      },1200);
+
+    })
+    .catch(() => {
+
+      alert(
+        "کد بازی: " +
+        roomCode
+      );
+
+    });
+
+};
+
+
+/* ==================================================
+   JOIN SCREEN
+================================================== */
+
+$("joinBtn").onclick = () => {
+
+  showScreen(
+    "joinScreen"
+  );
+
+  $("codeInput").value = "";
+
+  $("joinError").textContent = "";
+
+};
+
+
+$("backBtn").onclick = () => {
+
+  showScreen("home");
+
+};
+
+
+/* ==================================================
+   JOIN GAME
+================================================== */
+
+$("connectBtn").onclick =
+  joinGame;
 
 
 function joinGame(){
 
   const code =
-    document.getElementById("joinCode").value
-    .trim()
-    .toUpperCase();
+    $("codeInput")
+      .value
+      .trim();
 
-  if(!code){
 
-    alert("کد بازی را وارد کنید");
+  if(
+    !/^\d{4}$/.test(code)
+  ){
+
+    $("joinError").textContent =
+      "کد باید دقیقاً ۴ رقم باشد.";
 
     return;
-  }
-
-  room = code;
-
-  startLocalGame(2);
-
-}
-
-
-/* =========================
-   ساخت صفحه مین
-========================= */
-
-function startLocalGame(p){
-
-  player = p;
-
-  document
-    .getElementById("menu")
-    .classList.add("hidden");
-
-  document
-    .getElementById("game")
-    .classList.remove("hidden");
-
-  generateBoard();
-
-  renderBoard();
-
-  document
-    .getElementById("gameStatus")
-    .textContent =
-    `شما بازیکن ${player} هستید`;
-
-}
-
-
-/* =========================
-   تولید مین‌ها
-========================= */
-
-function generateBoard(){
-
-  board =
-    Array.from(
-      {length:ROWS},
-      () => Array(COLS).fill(0)
-    );
-
-  opened =
-    Array.from(
-      {length:ROWS},
-      () => Array(COLS).fill(false)
-    );
-
-  flags =
-    Array.from(
-      {length:ROWS},
-      () => Array(COLS).fill(false)
-    );
-
-
-  let placed = 0;
-
-  while(placed < MINES){
-
-    const r =
-      Math.floor(Math.random()*ROWS);
-
-    const c =
-      Math.floor(Math.random()*COLS);
-
-    if(board[r][c] !== "M"){
-
-      board[r][c] = "M";
-
-      placed++;
-
-    }
 
   }
 
 
-  for(let r=0;r<ROWS;r++){
+  role = "guest";
 
-    for(let c=0;c<COLS;c++){
+  roomCode = code;
 
-      if(board[r][c] === "M")
-        continue;
 
-      let count = 0;
+  $("connectBtn").disabled =
+    true;
 
-      for(let dr=-1;dr<=1;dr++){
+  $("connectBtn").textContent =
+    "در حال اتصال...";
 
-        for(let dc=-1;dc<=1;dc++){
 
-          if(dr===0 && dc===0)
-            continue;
+  /*
+    Guest یک Peer معمولی
+    برای خودش می‌سازد.
+  */
 
-          const nr=r+dr;
-          const nc=c+dc;
+  peer =
+    new Peer({
+      host:"0.peerjs.com",
+      port:443,
+      path:"/",
+      secure:true
+    });
 
-          if(
-            nr>=0 &&
-            nr<ROWS &&
-            nc>=0 &&
-            nc<COLS &&
-            board[nr][nc]==="M"
-          ){
 
-            count++;
+  peer.on(
+    "open",
+    myId => {
 
+      console.log(
+        "Guest ID:",
+        myId
+      );
+
+
+      /*
+        حالا با Peer ID چهار رقمی
+        میزبان ارتباط برقرار می‌کنیم.
+      */
+
+      connection =
+        peer.connect(
+          roomCode,
+          {
+            reliable:true
           }
+        );
+
+
+      setupConnection();
+
+
+      connection.on(
+        "open",
+        () => {
+
+          $("connectBtn").disabled =
+            false;
+
+          $("connectBtn").textContent =
+            "اتصال";
+
+          /*
+            میزبان بعد از اتصال
+            وضعیت بازی را می‌فرستد.
+          */
+
+          showScreen(
+            "gameScreen"
+          );
+
+          $("turnText").textContent =
+            "منتظر شروع بازی توسط میزبان...";
 
         }
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "error",
+    error => {
+
+      console.error(error);
+
+
+      $("connectBtn").disabled =
+        false;
+
+      $("connectBtn").textContent =
+        "اتصال";
+
+
+      $("joinError").textContent =
+        "اتصال انجام نشد. کد را بررسی کن.";
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   CONNECTION
+================================================== */
+
+function setupConnection(){
+
+  if(!connection)
+    return;
+
+
+  connection.on(
+    "data",
+    receiveData
+  );
+
+
+  connection.on(
+    "close",
+    () => {
+
+      if(!gameFinished){
+
+        alert(
+          "ارتباط با حریف قطع شد."
+        );
 
       }
 
-      board[r][c]=count;
+    }
+  );
+
+
+  connection.on(
+    "error",
+    error => {
+
+      console.error(
+        "Connection error:",
+        error
+      );
 
     }
+  );
+
+}
+
+
+/* ==================================================
+   RECEIVE DATA
+================================================== */
+
+function receiveData(data){
+
+  console.log(
+    "Received:",
+    data
+  );
+
+
+  /* ------------------------------------------
+     BOARD
+  ------------------------------------------ */
+
+  if(
+    data.type ===
+    "board"
+  ){
+
+    board =
+      data.board;
+
+    return;
+
+  }
+
+
+  /* ------------------------------------------
+     START
+  ------------------------------------------ */
+
+  if(
+    data.type ===
+    "start"
+  ){
+
+    board =
+      data.board;
+
+    currentTurn =
+      data.firstTurn;
+
+    resetGame();
+
+    startGame();
+
+    return;
+
+  }
+
+
+  /* ------------------------------------------
+     CORRECT MOVE
+  ------------------------------------------ */
+
+  if(
+    data.type ===
+    "correct"
+  ){
+
+    revealed.add(
+      data.index
+    );
+
+    target =
+      data.nextTarget;
+
+
+    renderBoard();
+
+    updateGameUI();
+
+
+    /*
+      بازیکن مقابل
+      بازی را تمام کرده.
+    */
+
+    if(
+      data.finished
+    ){
+
+      gameFinished =
+        true;
+
+      finishGame(false);
+
+    }
+
+    return;
+
+  }
+
+
+  /* ------------------------------------------
+     WRONG MOVE
+  ------------------------------------------ */
+
+  if(
+    data.type ===
+    "wrong"
+  ){
+
+    /*
+      خانه اشتباه را
+      موقتاً قرمز می‌کنیم.
+    */
+
+    showWrong(
+      data.index
+    );
+
+
+    setTimeout(
+      () => {
+
+        revealed =
+          new Set();
+
+        target = 1;
+
+
+        currentTurn =
+          data.nextTurn;
+
+
+        renderBoard();
+
+        updateGameUI();
+
+      },
+      850
+    );
+
+
+    return;
+
+  }
+
+
+  /* ------------------------------------------
+     REMATCH
+  ------------------------------------------ */
+
+  if(
+    data.type ===
+    "rematch"
+  ){
+
+    board =
+      data.board;
+
+    currentTurn =
+      data.firstTurn;
+
+    resetGame();
+
+    startGame();
+
+    return;
 
   }
 
 }
 
 
-/* =========================
-   نمایش صفحه
-========================= */
+/* ==================================================
+   START GAME
+================================================== */
+
+$("startBtn").onclick =
+  startAsHost;
+
+
+function startAsHost(){
+
+  board =
+    createBoard();
+
+
+  currentTurn =
+    "host";
+
+
+  resetGame();
+
+
+  send({
+
+    type:"start",
+
+    board:board,
+
+    firstTurn:
+      currentTurn
+
+  });
+
+
+  startGame();
+
+}
+
+
+function startGame(){
+
+  gameStarted =
+    true;
+
+  gameFinished =
+    false;
+
+
+  showScreen(
+    "gameScreen"
+  );
+
+
+  buildGrid();
+
+  renderBoard();
+
+  updateGameUI();
+
+}
+
+
+/* ==================================================
+   BUILD GRID
+================================================== */
+
+function buildGrid(){
+
+  const grid =
+    $("grid");
+
+
+  grid.innerHTML =
+    "";
+
+
+  for(
+    let i=0;
+    i<16;
+    i++
+  ){
+
+    const cell =
+      document.createElement(
+        "div"
+      );
+
+
+    cell.className =
+      "cell";
+
+
+    cell.dataset.index =
+      i;
+
+
+    cell.onclick =
+      () => clickCell(i);
+
+
+    grid.appendChild(
+      cell
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   CLICK CELL
+================================================== */
+
+function clickCell(index){
+
+  if(
+    !gameStarted ||
+    gameFinished
+  )
+    return;
+
+
+  /*
+    اگر نوبت ما نیست
+  */
+
+  if(
+    currentTurn !== role
+  )
+    return;
+
+
+  /*
+    اگر قبلاً باز شده
+  */
+
+  if(
+    revealed.has(index)
+  )
+    return;
+
+
+  const number =
+    board[index];
+
+
+  /* ------------------------------------------
+     CORRECT
+  ------------------------------------------ */
+
+  if(
+    number === target
+  ){
+
+    revealed.add(index);
+
+    target++;
+
+
+    const finished =
+      target > 16;
+
+
+    renderBoard();
+
+    updateGameUI();
+
+
+    send({
+
+      type:"correct",
+
+      index:index,
+
+      nextTarget:
+        target,
+
+      finished:
+        finished
+
+    });
+
+
+    if(finished){
+
+      gameFinished =
+        true;
+
+      finishGame(true);
+
+    }
+
+    return;
+
+  }
+
+
+  /* ------------------------------------------
+     WRONG
+  ------------------------------------------ */
+
+  const nextTurn =
+    currentTurn === "host"
+      ? "guest"
+      : "host";
+
+
+  send({
+
+    type:"wrong",
+
+    index:index,
+
+    nextTurn:
+      nextTurn
+
+  });
+
+
+  showWrong(
+    index
+  );
+
+
+  setTimeout(
+    () => {
+
+      revealed =
+        new Set();
+
+      target = 1;
+
+      currentTurn =
+        nextTurn;
+
+
+      renderBoard();
+
+      updateGameUI();
+
+    },
+    850
+  );
+
+}
+
+
+/* ==================================================
+   WRONG ANIMATION
+================================================== */
+
+function showWrong(index){
+
+  const cell =
+    $("grid")
+      .children[index];
+
+
+  if(!cell)
+    return;
+
+
+  cell.classList.add(
+    "wrong"
+  );
+
+
+  cell.textContent =
+    board[index];
+
+
+  setTimeout(
+    () => {
+
+      cell.classList.remove(
+        "wrong"
+      );
+
+      cell.textContent =
+        "";
+
+    },
+    800
+  );
+
+}
+
+
+/* ==================================================
+   RENDER BOARD
+================================================== */
 
 function renderBoard(){
 
-  const container =
-    document.getElementById("board");
-
-  container.innerHTML="";
+  const grid =
+    $("grid");
 
 
-  for(let r=0;r<ROWS;r++){
+  for(
+    let i=0;
+    i<16;
+    i++
+  ){
 
-    for(let c=0;c<COLS;c++){
-
-      const btn =
-        document.createElement("button");
-
-      btn.className="cell";
-
-
-      if(opened[r][c]){
-
-        btn.classList.add("open");
-
-        if(board[r][c]==="M"){
-
-          btn.classList.add("mine");
-
-          btn.textContent="💣";
-
-        }
-        else if(board[r][c]>0){
-
-          btn.textContent =
-            board[r][c];
-
-        }
-
-      }
-      else if(flags[r][c]){
-
-        btn.classList.add("flag");
-
-        btn.textContent="🚩";
-
-      }
+    const cell =
+      grid.children[i];
 
 
-      btn.onclick =
-        () => openCell(r,c);
-
-      btn.oncontextmenu =
-        e => {
-
-          e.preventDefault();
-
-          toggleFlag(r,c);
-
-        };
+    if(
+      !cell
+    )
+      continue;
 
 
-      container.appendChild(btn);
+    cell.classList.remove(
+      "open",
+      "wrong"
+    );
+
+
+    cell.textContent =
+      "";
+
+
+    if(
+      revealed.has(i)
+    ){
+
+      cell.classList.add(
+        "open"
+      );
+
+
+      cell.textContent =
+        board[i];
 
     }
 
   }
 
+
+  grid.classList.toggle(
+    "disabled",
+    currentTurn !== role ||
+    gameFinished
+  );
+
 }
 
 
-/* =========================
-   باز کردن خانه
-========================= */
+/* ==================================================
+   GAME UI
+================================================== */
 
-function openCell(r,c){
+function updateGameUI(){
 
-  if(opened[r][c] || flags[r][c])
-    return;
+  $("target").textContent =
+    target <= 16
+      ? toFa(target)
+      : "✓";
 
 
-  opened[r][c]=true;
+  const percentage =
+    ((target - 1) / 16) *
+    100;
 
 
-  if(board[r][c]==="M"){
+  $("progressBar")
+    .style
+    .width =
+      percentage + "%";
 
-    revealMines();
 
-    document
-      .getElementById("gameStatus")
+  const myTurn =
+    currentTurn === role;
+
+
+  $("mePlayer")
+    .classList
+    .toggle(
+      "active",
+      myTurn
+    );
+
+
+  $("enemyPlayer")
+    .classList
+    .toggle(
+      "active",
+      !myTurn
+    );
+
+
+  $("meTurn").textContent =
+    myTurn
+      ? "نوبت شما"
+      : "";
+
+
+  $("enemyTurn").textContent =
+    !myTurn
+      ? "نوبت حریف"
+      : "";
+
+
+  if(myTurn){
+
+    $("turnText").textContent =
+      "🎯 نوبت شماست";
+
+  }
+  else{
+
+    $("turnText").textContent =
+      "⏳ منتظر نوبت حریف...";
+
+  }
+
+
+  $("roomText").textContent =
+    "#" + roomCode;
+
+}
+
+
+/* ==================================================
+   FINISH GAME
+================================================== */
+
+function finishGame(iWon){
+
+  gameFinished =
+    true;
+
+
+  $("grid")
+    .classList
+    .add("disabled");
+
+
+  if(iWon){
+
+    $("resultEmoji")
       .textContent =
-      `💥 بازیکن ${player} مین را زد!`;
+      "🏆";
 
-    return;
 
-  }
-
-
-  scores[player-1]++;
-
-  updateScores();
-
-
-  if(board[r][c]===0){
-
-    flood(r,c);
-
-  }
-
-
-  renderBoard();
-
-  checkWin();
-
-}
-
-
-/* =========================
-   باز کردن ناحیه خالی
-========================= */
-
-function flood(r,c){
-
-  for(let dr=-1;dr<=1;dr++){
-
-    for(let dc=-1;dc<=1;dc++){
-
-      const nr=r+dr;
-      const nc=c+dc;
-
-      if(
-        nr>=0 &&
-        nr<ROWS &&
-        nc>=0 &&
-        nc<COLS &&
-        !opened[nr][nc] &&
-        board[nr][nc]!=="M"
-      ){
-
-        opened[nr][nc]=true;
-
-        if(board[nr][nc]===0)
-          flood(nr,nc);
-
-      }
-
-    }
-
-  }
-
-}
-
-
-/* =========================
-   پرچم
-========================= */
-
-function toggleFlag(r,c){
-
-  if(opened[r][c])
-    return;
-
-  flags[r][c] =
-    !flags[r][c];
-
-  renderBoard();
-
-}
-
-
-/* =========================
-   نمایش مین‌ها
-========================= */
-
-function revealMines(){
-
-  for(let r=0;r<ROWS;r++){
-
-    for(let c=0;c<COLS;c++){
-
-      if(board[r][c]==="M")
-        opened[r][c]=true;
-
-    }
-
-  }
-
-  renderBoard();
-
-}
-
-
-/* =========================
-   امتیاز
-========================= */
-
-function updateScores(){
-
-  document
-    .getElementById("score1")
-    .textContent=scores[0];
-
-  document
-    .getElementById("score2")
-    .textContent=scores[1];
-
-}
-
-
-/* =========================
-   پایان بازی
-========================= */
-
-function checkWin(){
-
-  let total=0;
-
-  for(let r=0;r<ROWS;r++){
-
-    for(let c=0;c<COLS;c++){
-
-      if(
-        board[r][c]!=="M" &&
-        opened[r][c]
-      ){
-
-        total++;
-
-      }
-
-    }
-
-  }
-
-
-  if(total === ROWS*COLS-MINES){
-
-    const winner =
-      scores[0] > scores[1]
-      ? "بازیکن ۱"
-      : scores[1] > scores[0]
-      ? "بازیکن ۲"
-      : "مساوی";
-
-    document
-      .getElementById("gameStatus")
+    $("resultTitle")
       .textContent =
-      `🏆 ${winner} برنده شد!`;
+      "بردی!";
+
+
+    $("resultText")
+      .textContent =
+      "تو تونستی هر ۱۶ عدد رو بدون اشتباه پیدا کنی.";
+
+  }
+  else{
+
+    $("resultEmoji")
+      .textContent =
+      "😅";
+
+
+    $("resultTitle")
+      .textContent =
+      "باختی!";
+
+
+    $("resultText")
+      .textContent =
+      "حریف زودتر همه عددها رو پیدا کرد.";
+
+  }
+
+
+  $("overlay")
+    .classList
+    .add("show");
+
+
+  /*
+    فقط میزبان می‌تواند
+    بازی دوباره را شروع کند.
+  */
+
+  if(role === "host"){
+
+    $("againBtn")
+      .style
+      .display =
+      "block";
+
+  }
+  else{
+
+    $("againBtn")
+      .style
+      .display =
+      "none";
 
   }
 
 }
 
+
+/* ==================================================
+   REMATCH
+================================================== */
+
+$("againBtn").onclick =
+  rematch;
+
+
+function rematch(){
+
+  if(role !== "host")
+    return;
+
+
+  board =
+    createBoard();
+
+
+  /*
+    این بار نوبت مهمان است
+    تا بازی عادلانه‌تر شود.
+  */
+
+  currentTurn =
+    "guest";
+
+
+  resetGame();
+
+
+  send({
+
+    type:"rematch",
+
+    board:board,
+
+    firstTurn:
+      currentTurn
+
+  });
+
+
+  $("overlay")
+    .classList
+    .remove("show");
+
+
+  startGame();
+
+}
+
+
+/* ==================================================
+   HOME
+================================================== */
+
+$("homeBtn").onclick = () => {
+
+  $("overlay")
+    .classList
+    .remove("show");
+
+
+  destroyConnection();
+
+
+  role = null;
+
+  roomCode = null;
+
+  board = [];
+
+  revealed =
+    new Set();
+
+  target = 1;
+
+
+  showScreen(
+    "home"
+  );
+
+};
+
+
+/* ==================================================
+   CANCEL
+================================================== */
+
+$("cancelBtn").onclick = () => {
+
+  destroyConnection();
+
+  showScreen(
+    "home"
+  );
+
+};
+
+
+/* ==================================================
+   PERSIAN NUMBERS
+================================================== */
+
+function toFa(number){
+
+  const fa = [
+    "۰","۱","۲","۳","۴",
+    "۵","۶","۷","۸","۹"
+  ];
+
+
+  return String(number)
+    .split("")
+    .map(
+      char =>
+        /\d/.test(char)
+          ? fa[char]
+          : char
+    )
+    .join("");
+
+}
+
+})();
 </script>
 
 </body>
