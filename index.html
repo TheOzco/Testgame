@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>مین‌روب دونفره</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg-1:#eaf7ec;
+  --bg-2:#dcefe3;
+  --bg-3:#cdeadd;
+
+  --card:#fff;
+
+  --ink:#1e3a2b;
+  --ink-soft:#5b7268;
+
+  --green:#2f9e63;
+  --green-dark:#227a4c;
+  --green-pale:#e4f5ea;
+
+  --blue:#2e7dbb;
+  --blue-dark:#215f92;
+  --blue-pale:#e5f1fa;
+
+  --red:#e2574c;
+
+  --tile:#edf6f0;
+  --tile-dark:#d8eade;
+
+  --shadow:
+    0 12px 30px -10px rgba(35,90,60,.25);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  min-height:100%;
+}
+
+body{
+  margin:0;
+  padding:18px 13px;
+
+  font-family:'Vazirmatn',sans-serif;
+
+  color:var(--ink);
+
+  background:
+    radial-gradient(
+      60% 50% at 15% 0%,
+      rgba(46,125,187,.10),
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 60% at 100% 100%,
+      rgba(47,158,99,.14),
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
+      var(--bg-1),
+      var(--bg-2) 55%,
+      var(--bg-3)
+    );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:440px;
+}
+
+.brand{
+  text-align:center;
+  margin-bottom:17px;
+}
+
+.logo{
+  font-family:'Baloo 2',sans-serif;
+  font-size:28px;
+  font-weight:800;
+  color:var(--green-dark);
+}
+
+.brand p{
+  margin:3px 0 0;
+  color:var(--ink-soft);
+  font-size:12px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:22px;
+  padding:23px 20px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(47,158,99,.1);
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+  animation:rise .25s ease;
+}
+
+@keyframes rise{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.title{
+  margin:0 0 5px;
+  font-size:19px;
+}
+
+.sub{
+  color:var(--ink-soft);
+  font-size:13px;
+  line-height:1.9;
+  margin:0 0 18px;
+}
+
+.stack{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:14px 15px;
+
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.primary{
+  color:#fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--green),
+      var(--green-dark)
+    );
+
+  box-shadow:
+    0 10px 20px -8px rgba(47,158,99,.55);
+}
+
+.secondary{
+  background:var(--blue-pale);
+  color:var(--blue-dark);
+}
+
+.outline{
+  background:transparent;
+  color:var(--ink-soft);
+  border:1.5px solid #dbe8e0;
+}
+
+.code-input{
+  width:100%;
+
+  border:1.5px solid #d8ece0;
+  border-radius:14px;
+
+  padding:14px;
+
+  background:var(--green-pale);
+
+  font-family:'Baloo 2',sans-serif;
+  font-size:24px;
+  letter-spacing:5px;
+
+  text-align:center;
+  direction:ltr;
+
+  outline:none;
+}
+
+.code-input:focus{
+  border-color:var(--green);
+}
+
+.code-box{
+  background:var(--green-pale);
+  border:1.5px dashed var(--green);
+  border-radius:16px;
+
+  padding:16px;
+
+  text-align:center;
+
+  margin:15px 0;
+}
+
+.code-label{
+  font-size:12px;
+  color:var(--ink-soft);
+}
+
+.room-code{
+  font-family:'Baloo 2',sans-serif;
+  font-size:34px;
+  font-weight:800;
+
+  letter-spacing:7px;
+
+  direction:ltr;
+
+  color:var(--green-dark);
+}
+
+.waiting{
+  text-align:center;
+  color:var(--ink-soft);
+  font-size:13px;
+  margin:15px 0;
+}
+
+.spinner{
+  display:inline-block;
+
+  width:18px;
+  height:18px;
+
+  border:3px solid rgba(47,158,99,.2);
+  border-top-color:var(--green);
+
+  border-radius:50%;
+
+  animation:spin .8s linear infinite;
+
+  vertical-align:middle;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+.error{
+  color:var(--red);
+  font-size:12px;
+  text-align:center;
+  min-height:18px;
+  margin-top:8px;
+}
+
+/* GAME */
+
+.players{
+  display:flex;
+  gap:9px;
+  margin-bottom:10px;
+}
+
+.player{
+  flex:1;
+
+  background:var(--green-pale);
+
+  border-radius:14px;
+
+  padding:9px;
+
+  text-align:center;
+
+  transition:.2s;
+}
+
+.player.blue{
+  background:var(--blue-pale);
+}
+
+.player.active{
+  box-shadow:
+    0 0 0 2px var(--green);
+
+  transform:translateY(-2px);
+}
+
+.player.blue.active{
+  box-shadow:
+    0 0 0 2px var(--blue);
+}
+
+.player-name{
+  font-size:12px;
+  font-weight:700;
+}
+
+.player-score{
+  font-family:'Baloo 2',sans-serif;
+  font-size:18px;
+  font-weight:800;
+
+  margin-top:1px;
+}
+
+.turn{
+  text-align:center;
+
+  min-height:21px;
+
+  font-size:13px;
+  font-weight:700;
+
+  color:var(--green-dark);
+
+  margin-bottom:9px;
+}
+
+.progress{
+  height:7px;
+
+  background:#edf4ef;
+
+  border-radius:99px;
+
+  overflow:hidden;
+
+  margin-bottom:12px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+
+  background:var(--green);
+
+  border-radius:99px;
+
+  transition:.25s;
+}
+
+.game-info{
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:10px;
+
+  font-size:12px;
+  color:var(--ink-soft);
+}
+
+.mine-count{
+  font-family:'Baloo 2',sans-serif;
+  font-size:15px;
+  color:var(--red);
+}
+
+.board{
+  display:grid;
+
+  grid-template-columns:
+    repeat(8,1fr);
+
+  gap:5px;
+
+  direction:ltr;
+}
+
+.board.disabled{
+  opacity:.65;
+}
+
+.cell{
+  aspect-ratio:1;
+
+  border-radius:7px;
+
+  border:
+    1px solid var(--tile-dark);
+
+  background:
+    linear-gradient(
+      145deg,
+      #f4faf6,
+      #e3f0e7
+    );
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  font-family:'Baloo 2',sans-serif;
+
+  font-size:clamp(
+    13px,
+    4.5vw,
+    20px
+  );
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  user-select:none;
+
+  transition:
+    transform .08s,
+    background .15s;
+}
+
+.cell:active{
+  transform:scale(.91);
+}
+
+.cell.open{
+  background:#fff;
+
+  border-color:#dfe9e2;
+
+  cursor:default;
+}
+
+.cell.flag{
+  background:#fff3ee;
+
+  border-color:#f0cfc7;
+}
+
+.cell.mine{
+  background:#fde9e6;
+
+  border-color:var(--red);
+}
+
+.cell.explode{
+  background:var(--red);
+  color:white;
+}
+
+.n1{color:#2875b5}
+.n2{color:#2f9e63}
+.n3{color:#d24b42}
+.n4{color:#674ea7}
+.n5{color:#a63d32}
+.n6{color:#2a8c91}
+.n7{color:#333}
+.n8{color:#777}
+
+.help{
+  text-align:center;
+
+  color:var(--ink-soft);
+
+  font-size:10.5px;
+
+  margin-top:11px;
+}
+
+/* RESULT */
+
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:
+    rgba(20,45,32,.55);
+
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+
+  z-index:100;
+
+  backdrop-filter:blur(2px);
+}
+
+.overlay.active{
+  display:flex;
+}
+
+.result{
+  width:100%;
+  max-width:340px;
+
+  background:#fff;
+
+  border-radius:22px;
+
+  padding:28px 22px;
+
+  text-align:center;
+
+  box-shadow:var(--shadow);
+}
+
+.result-emoji{
+  font-size:45px;
+}
+
+.result h2{
+  margin:7px 0 5px;
+  font-size:20px;
+}
+
+.result p{
+  color:var(--ink-soft);
+  font-size:13px;
+  line-height:1.8;
+  margin:0 0 17px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="brand">
+
+<div class="logo">
+💣 مین‌روب دونفره
+</div>
+
+<p>
+powered by theozco.
+</p>
+
+</div>
+
+
+<div class="card">
+
+
+<!-- HOME -->
+
+<div
+id="home"
+class="screen active">
+
+<h1 class="title">
+شروع بازی
+</h1>
+
+<p class="sub">
+یک بازی بساز و کد چهار رقمی را برای حریفت بفرست،
+یا با کدی که داری وارد بازی شو.
+</p>
+
+<div class="stack">
+
+<button
+id="createBtn"
+class="btn primary">
+
+🎮 ساخت بازی
+
+</button>
+
+<button
+id="joinBtn"
+class="btn secondary">
+
+🔗 پیوستن به بازی
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- JOIN -->
+
+<div
+id="join"
+class="screen">
+
+<h1 class="title">
+پیوستن به بازی
+</h1>
+
+<p class="sub">
+کد چهار رقمی بازی را وارد کن.
+</p>
+
+<input
+id="joinCode"
+class="code-input"
+maxlength="4"
+inputmode="numeric"
+placeholder="۱۲۳۴"
+autocomplete="off">
+
+<div
+id="joinError"
+class="error">
+</div>
+
+<div class="stack">
+
+<button
+id="connectBtn"
+class="btn primary">
+
+اتصال به بازی
+
+</button>
+
+<button
+id="joinBack"
+class="btn outline">
+
+بازگشت
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- HOST WAIT -->
+
+<div
+id="hostWait"
+class="screen">
+
+<h1 class="title">
+منتظر حریف
+</h1>
+
+<p class="sub">
+این کد را برای حریفت بفرست.
+</p>
+
+<div class="code-box">
+
+<div class="code-label">
+کد بازی
+</div>
+
+<div
+id="roomCode"
+class="room-code">
+----</div>
+
+</div>
+
+<button
+id="copyBtn"
+class="btn secondary">
+
+📋 کپی کد
+
+</button>
+
+<div class="waiting">
+
+<span class="spinner"></span>
+
+&nbsp;
+
+در انتظار اتصال حریف...
+
+</div>
+
+<button
+id="cancelBtn"
+class="btn outline">
+
+لغو
+
+</button>
+
+</div>
+
+
+<!-- READY -->
+
+<div
+id="ready"
+class="screen">
+
+<h1 class="title">
+حریف وصل شد! 🎉
+</h1>
+
+<p class="sub">
+صفحه مین برای هر دو بازیکن یکسان خواهد بود.
+میزبان بازی را شروع می‌کند.
+</p>
+
+<button
+id="startBtn"
+class="btn primary">
+
+🚀 شروع مین‌روب
+
+</button>
+
+</div>
+
+
+<!-- GAME -->
+
+<div
+id="game"
+class="screen">
+
+
+<div class="players">
+
+<div
+id="mePlayer"
+class="player">
+
+<div class="player-name">
+🟢 شما
+</div>
+
+<div
+id="meScore"
+class="player-score">
+۰
+</div>
+
+</div>
+
+
+<div
+id="enemyPlayer"
+class="player blue">
+
+<div class="player-name">
+🔵 حریف
+</div>
+
+<div
+id="enemyScore"
+class="player-score">
+۰
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="turn"
+class="turn">
+</div>
+
+
+<div class="progress">
+
+<div
+id="progressBar"
+class="progress-bar">
+</div>
+
+</div>
+
+
+<div class="game-info">
+
+<div>
+💣 مین:
+<span
+id="mineCount"
+class="mine-count">
+۱۰
+</span>
+</div>
+
+<div>
+🏠 <span id="roomLabel"></span>
+</div>
+
+</div>
+
+
+<div
+id="board"
+class="board">
+</div>
+
+
+<div class="help">
+👆 لمس = باز کردن &nbsp;&nbsp;|&nbsp;&nbsp;
+👆 نگه‌داشتن = پرچم
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div
+id="overlay"
+class="overlay">
+
+<div class="result">
+
+<div
+id="resultEmoji"
+class="result-emoji">
+🏆
+</div>
+
+<h2
+id="resultTitle">
+</h2>
+
+<p
+id="resultText">
+</p>
+
+<button
+id="rematchBtn"
+class="btn primary">
+
+🔄 بازی دوباره
+
+</button>
+
+<button
+id="homeBtn"
+class="btn outline">
+
+🏠 بازگشت به خانه
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+(() => {
+
+"use strict";
+
+
+/* =====================================================
+   PEER / CONNECTION
+===================================================== */
+
+let peer = null;
+
+let conn = null;
+
+let role = null;
+// host / guest
+
+let roomCode = null;
+
+
+/* =====================================================
+   GAME
+===================================================== */
+
+const ROWS = 8;
+
+const COLS = 8;
+
+const TOTAL = ROWS * COLS;
+
+const MINES = 10;
+
+let mines = new Set();
+
+let numbers = [];
+
+let opened = new Set();
+
+let flags = new Set();
+
+let myScore = 0;
+
+let enemyScore = 0;
+
+let gameOver = false;
+
+let started = false;
+
+
+/*
+  این نسخه نوبتی نیست.
+
+  هر بازیکن می‌تواند هر زمان
+  یک خانه را باز کند.
+
+  اولین بازیکنی که خانه امن
+  را باز کند امتیاز می‌گیرد.
+
+  مین برای هر دو بازیکن
+  مشترک است.
+*/
+
+
+/* =====================================================
+   ELEMENT
+===================================================== */
+
+const $ =
+  id => document.getElementById(id);
+
+
+function show(id){
+
+  [
+    "home",
+    "join",
+    "hostWait",
+    "ready",
+    "game"
+  ].forEach(
+    x =>
+      $(x)
+      .classList
+      .toggle(
+        "active",
+        x === id
+      )
+  );
+
+}
+
+
+/* =====================================================
+   RANDOM ROOM
+===================================================== */
+
+function generateRoom(){
+
+  return String(
+    Math.floor(
+      1000 +
+      Math.random() * 9000
+    )
+  );
+
+}
+
+
+/* =====================================================
+   RANDOM MINES
+===================================================== */
+
+function generateMines(){
+
+  mines =
+    new Set();
+
+
+  while(
+    mines.size < MINES
+  ){
+
+    mines.add(
+      Math.floor(
+        Math.random() * TOTAL
+      )
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   CALCULATE NUMBERS
+===================================================== */
+
+function calculateNumbers(){
+
+  numbers =
+    Array(TOTAL)
+    .fill(0);
+
+
+  for(
+    let index of mines
+  ){
+
+    const r =
+      Math.floor(
+        index / COLS
+      );
+
+    const c =
+      index % COLS;
+
+
+    for(
+      let dr=-1;
+      dr<=1;
+      dr++
+    ){
+
+      for(
+        let dc=-1;
+        dc<=1;
+        dc++
+      ){
+
+        if(
+          dr===0 &&
+          dc===0
+        )
+          continue;
+
+
+        const nr =
+          r + dr;
+
+        const nc =
+          c + dc;
+
+
+        if(
+          nr<0 ||
+          nr>=ROWS ||
+          nc<0 ||
+          nc>=COLS
+        )
+          continue;
+
+
+        const ni =
+          nr * COLS + nc;
+
+
+        if(
+          !mines.has(ni)
+        ){
+
+          numbers[ni]++;
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   SEND
+===================================================== */
+
+function send(data){
+
+  if(
+    conn &&
+    conn.open
+  ){
+
+    conn.send(data);
+
+  }
+
+}
+
+
+/* =====================================================
+   DESTROY
+===================================================== */
+
+function destroy(){
+
+  if(conn){
+
+    try{
+      conn.close();
+    }catch(e){}
+
+    conn = null;
+
+  }
+
+
+  if(peer){
+
+    try{
+      peer.destroy();
+    }catch(e){}
+
+    peer = null;
+
+  }
+
+}
+
+
+/* =====================================================
+   CREATE GAME
+===================================================== */
+
+$("createBtn").onclick =
+function(){
+
+  role = "host";
+
+  roomCode =
+    generateRoom();
+
+
+  $("roomCode")
+    .textContent =
+    roomCode;
+
+
+  show("hostWait");
+
+
+  /*
+    Peer ID دقیقاً همان
+    کد چهار رقمی است.
+  */
+
+  peer =
+    new Peer(
+      roomCode,
+      {
+        host:"0.peerjs.com",
+        port:443,
+        path:"/",
+        secure:true
+      }
+    );
+
+
+  peer.on(
+    "open",
+    id => {
+
+      console.log(
+        "HOST:",
+        id
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "connection",
+    newConn => {
+
+      if(conn){
+
+        newConn.close();
+
+        return;
+
+      }
+
+
+      conn =
+        newConn;
+
+
+      setupConnection();
+
+
+      conn.on(
+        "open",
+        () => {
+
+          show("ready");
+
+        }
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "error",
+    err => {
+
+      console.error(err);
+
+
+      if(
+        err.type ===
+        "unavailable-id"
+      ){
+
+        alert(
+          "این کد قبلاً استفاده شده. دوباره بازی بساز."
+        );
+
+        destroy();
+
+        show("home");
+
+      }
+
+    }
+  );
+
+};
+
+
+/* =====================================================
+   COPY
+===================================================== */
+
+$("copyBtn").onclick =
+function(){
+
+  navigator.clipboard
+    .writeText(roomCode)
+    .then(
+      () => {
+
+        $("copyBtn")
+          .textContent =
+          "✅ کپی شد";
+
+        setTimeout(
+          () => {
+
+            $("copyBtn")
+              .textContent =
+              "📋 کپی کد";
+
+          },
+          1300
+        );
+
+      }
+    )
+    .catch(
+      () =>
+        alert(
+          "کد بازی: " +
+          roomCode
+        )
+    );
+
+};
+
+
+/* =====================================================
+   JOIN
+===================================================== */
+
+$("joinBtn").onclick =
+function(){
+
+  $("joinError")
+    .textContent =
+    "";
+
+  show("join");
+
+};
+
+
+$("joinBack").onclick =
+function(){
+
+  show("home");
+
+};
+
+
+/* =====================================================
+   CONNECT
+===================================================== */
+
+$("connectBtn").onclick =
+function(){
+
+  const code =
+    $("joinCode")
+      .value
+      .trim();
+
+
+  if(
+    !/^\d{4}$/.test(code)
+  ){
+
+    $("joinError")
+      .textContent =
+      "کد باید دقیقاً ۴ رقم باشد.";
+
+    return;
+
+  }
+
+
+  role =
+    "guest";
+
+  roomCode =
+    code;
+
+
+  $("connectBtn")
+    .disabled =
+    true;
+
+
+  $("connectBtn")
+    .textContent =
+    "در حال اتصال...";
+
+
+  peer =
+    new Peer({
+      host:"0.peerjs.com",
+      port:443,
+      path:"/",
+      secure:true
+    });
+
+
+  peer.on(
+    "open",
+    () => {
+
+      conn =
+        peer.connect(
+          roomCode,
+          {
+            reliable:true
+          }
+        );
+
+
+      setupConnection();
+
+
+      conn.on(
+        "open",
+        () => {
+
+          $("connectBtn")
+            .disabled =
+            false;
+
+          $("connectBtn")
+            .textContent =
+            "اتصال به بازی";
+
+          /*
+            اینجا فقط منتظر شروع
+            میزبان می‌مانیم.
+          */
+
+          $("joinError")
+            .textContent =
+            "اتصال برقرار شد.";
+
+        }
+      );
+
+    }
+  );
+
+
+  peer.on(
+    "error",
+    err => {
+
+      console.error(err);
+
+      $("connectBtn")
+        .disabled =
+        false;
+
+      $("connectBtn")
+        .textContent =
+        "اتصال به بازی";
+
+      $("joinError")
+        .textContent =
+        "اتصال انجام نشد؛ کد را بررسی کن.";
+
+    }
+  );
+
+};
+
+
+/* =====================================================
+   CONNECTION EVENTS
+===================================================== */
+
+function setupConnection(){
+
+  if(!conn)
+    return;
+
+
+  conn.on(
+    "data",
+    receive
+  );
+
+
+  conn.on(
+    "close",
+    () => {
+
+      if(
+        !gameOver
+      ){
+
+        alert(
+          "ارتباط با حریف قطع شد."
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+$("startBtn").onclick =
+function(){
+
+  /*
+    فقط میزبان مین‌ها را می‌سازد.
+
+    سپس همان مین‌ها را برای
+    مهمان می‌فرستد.
+  */
+
+  generateMines();
+
+  calculateNumbers();
+
+
+  resetGame();
+
+
+  send({
+
+    type:"start",
+
+    mines:
+      [...mines],
+
+    numbers:
+      numbers
+
+  });
+
+
+  startLocalGame();
+
+};
+
+
+/* =====================================================
+   RECEIVE
+===================================================== */
+
+function receive(data){
+
+  /* START */
+
+  if(
+    data.type ===
+    "start"
+  ){
+
+    mines =
+      new Set(
+        data.mines
+      );
+
+
+    numbers =
+      data.numbers;
+
+
+    resetGame();
+
+    startLocalGame();
+
+    return;
+
+  }
+
+
+  /* OPEN */
+
+  if(
+    data.type ===
+    "open"
+  ){
+
+    remoteOpen(
+      data.index,
+      data.player
+    );
+
+    return;
+
+  }
+
+
+  /* FLAG */
+
+  if(
+    data.type ===
+    "flag"
+  ){
+
+    if(
+      data.add
+    )
+      flags.add(
+        data.index
+      );
+    else
+      flags.delete(
+        data.index
+      );
+
+
+    render();
+
+    return;
+
+  }
+
+
+  /* GAME OVER */
+
+  if(
+    data.type ===
+    "gameover"
+  ){
+
+    if(
+      data.reason ===
+      "mine"
+    ){
+
+      gameOver =
+        true;
+
+      finish(
+        false,
+        "حریف مین را باز کرد و باخت."
+      );
+
+    }
+
+    return;
+
+  }
+
+
+  /* WIN */
+
+  if(
+    data.type ===
+    "win"
+  ){
+
+    gameOver =
+      true;
+
+    finish(
+      false,
+      "حریف تمام خانه‌های امن را باز کرد."
+    );
+
+    return;
+
+  }
+
+
+  /* REMATCH */
+
+  if(
+    data.type ===
+    "rematch"
+  ){
+
+    mines =
+      new Set(
+        data.mines
+      );
+
+    numbers =
+      data.numbers;
+
+
+    resetGame();
+
+    startLocalGame();
+
+  }
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetGame(){
+
+  opened =
+    new Set();
+
+  flags =
+    new Set();
+
+  myScore = 0;
+
+  enemyScore = 0;
+
+  gameOver = false;
+
+  started = false;
+
+}
+
+
+/* =====================================================
+   START LOCAL
+===================================================== */
+
+function startLocalGame(){
+
+  started =
+    true;
+
+  gameOver =
+    false;
+
+
+  show("game");
+
+
+  $("roomLabel")
+    .textContent =
+    roomCode;
+
+
+  buildBoard();
+
+  render();
+
+}
+
+
+/* =====================================================
+   BUILD
+===================================================== */
+
+function buildBoard(){
+
+  const board =
+    $("board");
+
+
+  board.innerHTML =
+    "";
+
+
+  for(
+    let i=0;
+    i<TOTAL;
+    i++
+  ){
+
+    const cell =
+      document.createElement(
+        "div"
+      );
+
+
+    cell.className =
+      "cell";
+
+
+    cell.dataset.index =
+      i;
+
+
+    /*
+      کلیک معمولی
+    */
+
+    cell.addEventListener(
+      "click",
+      () =>
+        openCell(i)
+    );
+
+
+    /*
+      نگه داشتن
+      برای Flag
+    */
+
+    let timer = null;
+
+
+    cell.addEventListener(
+      "touchstart",
+      e => {
+
+        timer =
+          setTimeout(
+            () => {
+
+              toggleFlag(i);
+
+            },
+            500
+          );
+
+      },
+      {
+        passive:true
+      }
+    );
+
+
+    cell.addEventListener(
+      "touchend",
+      () => {
+
+        if(timer)
+          clearTimeout(timer);
+
+      }
+    );
+
+
+    board.appendChild(
+      cell
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   OPEN CELL
+===================================================== */
+
+function openCell(index){
+
+  if(
+    !started ||
+    gameOver
+  )
+    return;
+
+
+  if(
+    opened.has(index) ||
+    flags.has(index)
+  )
+    return;
+
+
+  /*
+    اگر مین باشد:
+    باخت
+  */
+
+  if(
+    mines.has(index)
+  ){
+
+    revealMine(index);
+
+
+    gameOver =
+      true;
+
+
+    send({
+
+      type:"gameover",
+
+      reason:"mine"
+
+    });
+
+
+    finish(
+      false,
+      "💥 مین را باز کردی!"
+    );
+
+
+    return;
+
+  }
+
+
+  /*
+    خانه امن
+  */
+
+  const newlyOpened =
+    floodOpen(index);
+
+
+  myScore +=
+    newlyOpened.length;
+
+
+  send({
+
+    type:"open",
+
+    index:index,
+
+    player:role,
+
+    count:
+      newlyOpened.length
+
+  });
+
+
+  render();
+
+
+  /*
+    اگر همه خانه‌های امن
+    باز شده باشند
+  */
+
+  if(
+    opened.size >=
+    TOTAL - MINES
+  ){
+
+    gameOver =
+      true;
+
+
+    send({
+      type:"win"
+    });
+
+
+    finish(
+      true,
+      "🏆 تمام خانه‌های امن را باز کردی!"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   FLOOD OPEN
+===================================================== */
+
+function floodOpen(start){
+
+  const result = [];
+
+  const queue =
+    [start];
+
+
+  while(
+    queue.length
+  ){
+
+    const index =
+      queue.shift();
+
+
+    if(
+      opened.has(index) ||
+      flags.has(index) ||
+      mines.has(index)
+    )
+      continue;
+
+
+    opened.add(index);
+
+    result.push(index);
+
+
+    /*
+      اگر عدد صفر باشد،
+      خانه‌های اطراف هم باز شوند.
+    */
+
+    if(
+      numbers[index] === 0
+    ){
+
+      const neighbors =
+        getNeighbors(index);
+
+
+      for(
+        const n of neighbors
+      ){
+
+        if(
+          !opened.has(n) &&
+          !mines.has(n)
+        ){
+
+          queue.push(n);
+
+        }
+
+      }
+
+    }
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =====================================================
+   REMOTE OPEN
+===================================================== */
+
+function remoteOpen(
+  index,
+  player
+){
+
+  if(
+    gameOver ||
+    opened.has(index)
+  )
+    return;
+
+
+  /*
+    حریف مین باز کرده.
+  */
+
+  if(
+    mines.has(index)
+  ){
+
+    revealMine(index);
+
+
+    gameOver =
+      true;
+
+
+    finish(
+      true,
+      "🎉 حریف مین را باز کرد!"
+    );
+
+
+    return;
+
+  }
+
+
+  const newCells =
+    floodOpen(index);
+
+
+  if(
+    player !== role
+  ){
+
+    enemyScore +=
+      newCells.length;
+
+  }
+
+
+  render();
+
+}
+
+
+/* =====================================================
+   NEIGHBORS
+===================================================== */
+
+function getNeighbors(index){
+
+  const r =
+    Math.floor(
+      index / COLS
+    );
+
+  const c =
+    index % COLS;
+
+
+  const result = [];
+
+
+  for(
+    let dr=-1;
+    dr<=1;
+    dr++
+  ){
+
+    for(
+      let dc=-1;
+      dc<=1;
+      dc++
+    ){
+
+      if(
+        dr===0 &&
+        dc===0
+      )
+        continue;
+
+
+      const nr =
+        r + dr;
+
+      const nc =
+        c + dc;
+
+
+      if(
+        nr>=0 &&
+        nr<ROWS &&
+        nc>=0 &&
+        nc<COLS
+      ){
+
+        result.push(
+          nr * COLS + nc
+        );
+
+      }
+
+    }
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =====================================================
+   FLAG
+===================================================== */
+
+function toggleFlag(index){
+
+  if(
+    !started ||
+    gameOver ||
+    opened.has(index)
+  )
+    return;
+
+
+  if(
+    flags.has(index)
+  ){
+
+    flags.delete(index);
+
+    send({
+
+      type:"flag",
+
+      index:index,
+
+      add:false
+
+    });
+
+  }
+  else{
+
+    if(
+      flags.size >= MINES
+    )
+      return;
+
+
+    flags.add(index);
+
+
+    send({
+
+      type:"flag",
+
+      index:index,
+
+      add:true
+
+    });
+
+  }
+
+
+  render();
+
+}
+
+
+/* =====================================================
+   REVEAL MINE
+===================================================== */
+
+function revealMine(index){
+
+  const cell =
+    $("board")
+      .children[index];
+
+
+  if(!cell)
+    return;
+
+
+  cell.classList.add(
+    "explode"
+  );
+
+
+  cell.textContent =
+    "💣";
+
+
+  /*
+    همه مین‌ها را نمایش بده
+  */
+
+  mines.forEach(
+    mine => {
+
+      const c =
+        $("board")
+          .children[mine];
+
+
+      if(
+        c &&
+        mine !== index
+      ){
+
+        c.classList.add(
+          "mine"
+        );
+
+        c.textContent =
+          "💣";
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function render(){
+
+  const board =
+    $("board");
+
+
+  for(
+    let i=0;
+    i<TOTAL;
+    i++
+  ){
+
+    const cell =
+      board.children[i];
+
+
+    if(!cell)
+      continue;
+
+
+    cell.className =
+      "cell";
+
+
+    cell.textContent =
+      "";
+
+
+    /*
+      Flag
+    */
+
+    if(
+      flags.has(i) &&
+      !opened.has(i)
+    ){
+
+      cell.classList.add(
+        "flag"
+      );
+
+      cell.textContent =
+        "🚩";
+
+      continue;
+
+    }
+
+
+    /*
+      Open
+    */
+
+    if(
+      opened.has(i)
+    ){
+
+      cell.classList.add(
+        "open"
+      );
+
+
+      const num =
+        numbers[i];
+
+
+      if(
+        num > 0
+      ){
+
+        cell.textContent =
+          num;
+
+
+        cell.classList.add(
+          "n" + num
+        );
+
+      }
+
+    }
+
+  }
+
+
+  $("meScore")
+    .textContent =
+    toFa(myScore);
+
+
+  $("enemyScore")
+    .textContent =
+    toFa(enemyScore);
+
+
+  const percent =
+    (
+      opened.size /
+      (TOTAL - MINES)
+    ) * 100;
+
+
+  $("progressBar")
+    .style
+    .width =
+    Math.min(
+      percent,
+      100
+    ) + "%";
+
+
+  $("mineCount")
+    .textContent =
+    toFa(
+      Math.max(
+        0,
+        MINES - flags.size
+      )
+    );
+
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+function finish(
+  won,
+  message
+){
+
+  gameOver =
+    true;
+
+
+  $("resultEmoji")
+    .textContent =
+    won
+      ? "🏆"
+      : "💥";
+
+
+  $("resultTitle")
+    .textContent =
+    won
+      ? "بردی!"
+      : "باختی!";
+
+
+  $("resultText")
+    .textContent =
+    message;
+
+
+  /*
+    فقط Host بازی دوباره را
+    شروع می‌کند.
+  */
+
+  $("rematchBtn")
+    .style
+    .display =
+    role === "host"
+      ? "block"
+      : "none";
+
+
+  $("overlay")
+    .classList
+    .add("active");
+
+}
+
+
+/* =====================================================
+   REMATCH
+===================================================== */
+
+$("rematchBtn").onclick =
+function(){
+
+  if(
+    role !== "host"
+  )
+    return;
+
+
+  generateMines();
+
+  calculateNumbers();
+
+  resetGame();
+
+
+  send({
+
+    type:"rematch",
+
+    mines:
+      [...mines],
+
+    numbers:
+      numbers
+
+  });
+
+
+  $("overlay")
+    .classList
+    .remove("active");
+
+
+  startLocalGame();
+
+};
+
+
+/* =====================================================
+   HOME
+===================================================== */
+
+$("homeBtn").onclick =
+function(){
+
+  $("overlay")
+    .classList
+    .remove("active");
+
+
+  destroy();
+
+
+  role = null;
+
+  roomCode = null;
+
+  show("home");
+
+};
+
+
+/* =====================================================
+   CANCEL
+===================================================== */
+
+$("cancelBtn").onclick =
+function(){
+
+  destroy();
+
+  show("home");
+
+};
+
+
+/* =====================================================
+   TURN UI
+===================================================== */
+
+/*
+  مین‌روب این نسخه نوبتی نیست.
+  هر دو بازیکن همزمان می‌توانند
+  خانه باز کنند.
+*/
+
+$("turn").textContent =
+  "🎯 هر دو بازیکن می‌توانند بازی کنند";
+
+
+/* =====================================================
+   PERSIAN NUMBERS
+===================================================== */
+
+function toFa(n){
+
+  const fa = [
+    "۰","۱","۲","۳","۴",
+    "۵","۶","۷","۸","۹"
+  ];
+
+
+  return String(n)
+    .split("")
+    .map(
+      x =>
+        /\d/.test(x)
+          ? fa[x]
+          : x
+    )
+    .join("");
+
+}
+
+})();
+</script>
+
+</body>
+</html>
